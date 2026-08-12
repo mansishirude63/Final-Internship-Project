@@ -1,0 +1,258 @@
+/* ===============================
+          Success Popup
+================================ */
+
+.success-overlay{
+
+    position:fixed;
+
+    top:0;
+    left:0;
+
+    width:100%;
+    height:100%;
+
+    background:rgba(0,0,0,.55);
+
+    backdrop-filter:blur(4px);
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    padding:20px;
+
+    z-index:2000;
+
+}
+
+/* ===============================
+          Success Card
+================================ */
+
+.success-card{
+
+    width:100%;
+    max-width:420px;
+
+    background:#fff;
+
+    border-radius:22px;
+
+    padding:40px 30px;
+
+    text-align:center;
+
+    box-shadow:0 20px 45px rgba(0,0,0,.18);
+
+    animation:popupAnimation .35s ease;
+
+}
+
+/* ===============================
+            Icon
+================================ */
+
+.success-icon{
+
+    width:85px;
+
+    height:85px;
+
+    margin:0 auto 20px;
+
+    border-radius:50%;
+
+    background:linear-gradient(135deg,#2ecc71,#27ae60);
+
+    color:#fff;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-size:50px;
+
+    box-shadow:0 8px 20px rgba(46,204,113,.35);
+
+}
+
+/* ===============================
+            Heading
+================================ */
+
+.success-card h2{
+
+    color:#2ecc71;
+
+    font-size:30px;
+
+    margin-bottom:12px;
+
+}
+
+/* ===============================
+            Text
+================================ */
+
+.success-card p{
+
+    color:#555;
+
+    font-size:17px;
+
+    line-height:1.6;
+
+    margin-bottom:28px;
+
+}
+
+/* ===============================
+            Button
+================================ */
+
+.success-card button{
+
+    width:100%;
+
+    padding:14px;
+
+    border:none;
+
+    border-radius:30px;
+
+    background:#ff7a00;
+
+    color:#fff;
+
+    font-size:17px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+.success-card button:hover{
+
+    background:#e66b00;
+
+    transform:translateY(-2px);
+
+}
+
+/* ===============================
+          Animation
+================================ */
+
+@keyframes popupAnimation{
+
+    from{
+
+        opacity:0;
+
+        transform:scale(.8);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:scale(1);
+
+    }
+
+}
+
+/* ===============================
+            Tablet
+================================ */
+
+@media(max-width:768px){
+
+.success-card{
+
+    max-width:380px;
+
+    padding:35px 25px;
+
+}
+
+.success-icon{
+
+    width:75px;
+
+    height:75px;
+
+    font-size:42px;
+
+}
+
+.success-card h2{
+
+    font-size:26px;
+
+}
+
+}
+
+/* ===============================
+            Mobile
+================================ */
+
+@media(max-width:480px){
+
+.success-overlay{
+
+    padding:15px;
+
+}
+
+.success-card{
+
+    width:100%;
+
+    padding:30px 20px;
+
+    border-radius:18px;
+
+}
+
+.success-icon{
+
+    width:70px;
+
+    height:70px;
+
+    font-size:38px;
+
+}
+
+.success-card h2{
+
+    font-size:24px;
+
+}
+
+.success-card p{
+
+    font-size:15px;
+
+}
+
+.success-card button{
+
+    font-size:16px;
+
+    padding:12px;
+
+}
+
+}

@@ -1,0 +1,617 @@
+
+.group-offer-section {
+    padding: 70px 20px;
+
+    background: #fff8f0;
+}
+
+
+.group-offer-container {
+    max-width: 1150px;
+
+    margin: auto;
+
+    min-height: 430px;
+
+    padding: 45px;
+
+    box-sizing: border-box;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 50px;
+
+    border-radius: 30px;
+
+    background: linear-gradient(
+        135deg,
+        #fff3e4,
+        #fffaf5
+    );
+
+    border: 1px solid #ffe1c2;
+
+    overflow: hidden;
+
+    position: relative;
+}
+
+
+/* ================================= */
+/* CONTENT */
+/* ================================= */
+
+.group-offer-content {
+    flex: 1;
+
+    max-width: 620px;
+
+    position: relative;
+
+    z-index: 2;
+}
+
+
+.group-offer-badge {
+    display: inline-block;
+
+    padding: 8px 14px;
+
+    border-radius: 30px;
+
+    background: #fff;
+
+    color: #e86f00;
+
+    border: 1px solid #ffd2a5;
+
+    font-size: 12px;
+
+    font-weight: bold;
+
+    letter-spacing: 0.5px;
+
+    margin-bottom: 15px;
+}
+
+
+.group-offer-content h2 {
+    margin: 0 0 15px;
+
+    font-size: 42px;
+
+    line-height: 1.15;
+
+    color: #222;
+}
+
+
+.group-offer-content h2 span {
+    color: #e86f00;
+}
+
+
+.group-offer-content > p {
+    max-width: 560px;
+
+    margin: 0 0 25px;
+
+    color: #666;
+
+    font-size: 16px;
+
+    line-height: 1.7;
+}
+
+
+/* ================================= */
+/* FEATURES */
+/* ================================= */
+
+.group-offer-features {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(190px, 1fr));
+
+    gap: 12px;
+
+    margin-bottom: 25px;
+}
+
+
+.group-offer-feature {
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 10px;
+
+    border-radius: 12px;
+
+    background: rgba(255, 255, 255, 0.75);
+}
+
+
+.group-offer-icon {
+    width: 38px;
+    height: 38px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+
+    background: #fff0df;
+
+    font-size: 20px;
+}
+
+
+.group-offer-feature strong {
+    display: block;
+
+    font-size: 13px;
+
+    color: #333;
+}
+
+
+.group-offer-feature small {
+    display: block;
+
+    margin-top: 2px;
+
+    color: #888;
+
+    font-size: 11px;
+}
+
+
+/* ================================= */
+/* BUTTON */
+/* ================================= */
+
+.group-offer-button {
+    border: none;
+
+    padding: 13px 22px;
+
+    border-radius: 10px;
+
+    background: #e86f00;
+
+    color: white;
+
+    font-size: 15px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    transition: 0.2s;
+}
+
+
+.group-offer-button span {
+    font-size: 20px;
+
+    transition: 0.2s;
+}
+
+
+.group-offer-button:hover {
+    background: #d46100;
+
+    transform: translateY(-2px);
+}
+
+
+.group-offer-button:hover span {
+    transform: translateX(4px);
+}
+
+
+/* ================================= */
+/* RIGHT VISUAL */
+/* ================================= */
+
+.group-offer-visual {
+    width: 390px;
+
+    height: 330px;
+
+    position: relative;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-shrink: 0;
+}
+
+
+.group-offer-main-card {
+    width: 285px;
+
+    padding: 20px;
+
+    border-radius: 20px;
+
+    background: white;
+
+    box-shadow:
+        0 15px 40px rgba(
+            120,
+            70,
+            20,
+            0.15
+        );
+
+    position: relative;
+
+    z-index: 2;
+}
+
+
+/* ================================= */
+/* CARD TOP */
+/* ================================= */
+
+.group-offer-card-top {
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    padding-bottom: 15px;
+
+    border-bottom: 1px solid #eee;
+}
+
+
+.group-offer-card-top > span:first-child {
+    width: 40px;
+    height: 40px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #fff0df;
+
+    font-size: 20px;
+}
+
+
+.group-offer-card-top strong {
+    display: block;
+
+    font-size: 14px;
+}
+
+
+.group-offer-card-top small {
+    display: block;
+
+    margin-top: 2px;
+
+    color: #999;
+
+    font-size: 11px;
+}
+
+
+.group-online-dot {
+    margin-left: auto;
+
+    color: #36a852;
+
+    font-size: 12px;
+}
+
+
+/* ================================= */
+/* FOOD ROW */
+/* ================================= */
+
+.group-offer-food-row {
+    display: flex;
+
+    justify-content: space-between;
+
+    margin: 20px 0;
+}
+
+
+.group-food-item {
+    width: 52px;
+    height: 52px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 14px;
+
+    background: #fff7ed;
+
+    font-size: 27px;
+}
+
+
+/* ================================= */
+/* BUDGET */
+/* ================================= */
+
+.group-offer-budget {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding-top: 14px;
+
+    border-top: 1px solid #eee;
+}
+
+
+.group-offer-budget span {
+    display: block;
+
+    color: #999;
+
+    font-size: 10px;
+}
+
+
+.group-offer-budget strong {
+    display: block;
+
+    margin-top: 3px;
+
+    font-size: 20px;
+
+    color: #222;
+}
+
+
+.budget-status {
+    padding: 6px 9px;
+
+    border-radius: 20px;
+
+    background: #eef9f0;
+
+    color: #29933d;
+
+    font-size: 10px;
+
+    font-weight: bold;
+}
+
+
+/* ================================= */
+/* FLOATING CIRCLES */
+/* ================================= */
+
+.group-offer-circle {
+    position: absolute;
+
+    width: 65px;
+    height: 65px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: white;
+
+    box-shadow:
+        0 10px 25px rgba(
+            100,
+            60,
+            20,
+            0.12
+        );
+
+    font-size: 30px;
+
+    z-index: 3;
+
+    animation: groupFloat 3s ease-in-out infinite;
+}
+
+
+.circle-one {
+    top: 15px;
+    left: 20px;
+}
+
+
+.circle-two {
+    right: 5px;
+    top: 65px;
+
+    animation-delay: 0.7s;
+}
+
+
+.circle-three {
+    bottom: 15px;
+    left: 35px;
+
+    animation-delay: 1.3s;
+}
+
+
+@keyframes groupFloat {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-8px);
+    }
+
+}
+
+
+/* ================================= */
+/* FLOATING TEXT */
+/* ================================= */
+
+.group-floating-text {
+    position: absolute;
+
+    right: 0;
+
+    bottom: 20px;
+
+    z-index: 4;
+
+    padding: 9px 13px;
+
+    border-radius: 20px;
+
+    background: white;
+
+    box-shadow:
+        0 8px 25px rgba(
+            100,
+            60,
+            20,
+            0.12
+        );
+
+    font-size: 11px;
+
+    font-weight: bold;
+
+    color: #555;
+}
+
+
+/* ================================= */
+/* RESPONSIVE */
+/* ================================= */
+
+@media (max-width: 900px) {
+
+    .group-offer-container {
+        flex-direction: column;
+
+        padding: 35px 25px;
+
+        text-align: center;
+    }
+
+
+    .group-offer-content {
+        max-width: 700px;
+    }
+
+
+    .group-offer-content > p {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+
+    .group-offer-features {
+        text-align: left;
+    }
+
+
+    .group-offer-visual {
+        width: 100%;
+
+        max-width: 390px;
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .group-offer-section {
+        padding: 45px 15px;
+    }
+
+
+    .group-offer-container {
+        padding: 30px 18px;
+
+        border-radius: 22px;
+    }
+
+
+    .group-offer-content h2 {
+        font-size: 30px;
+    }
+
+
+    .group-offer-content > p {
+        font-size: 14px;
+    }
+
+
+    .group-offer-features {
+        grid-template-columns: 1fr;
+    }
+
+
+    .group-offer-button {
+        width: 100%;
+
+        justify-content: center;
+    }
+
+
+    .group-offer-visual {
+        height: 290px;
+    }
+
+
+    .group-offer-main-card {
+        width: 250px;
+    }
+
+
+    .group-offer-circle {
+        width: 55px;
+        height: 55px;
+
+        font-size: 25px;
+    }
+
+}

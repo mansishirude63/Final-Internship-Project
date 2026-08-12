@@ -1,0 +1,638 @@
+.popup-overlay {
+
+    position: fixed;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+
+    background: rgba(0, 0, 0, 0.55);
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    padding: 20px;
+
+    z-index: 1000;
+
+}
+
+
+
+.popup-box {
+
+    background: white;
+
+    width: 100%;
+    max-width: 420px;
+
+    padding: 35px;
+
+    border-radius: 20px;
+
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+
+    position: relative;
+
+    animation: popupShow 0.35s ease;
+
+}
+
+
+
+@keyframes popupShow {
+
+    from {
+
+        transform: scale(.8);
+
+        opacity: 0;
+
+    }
+
+    to {
+
+        transform: scale(1);
+
+        opacity: 1;
+
+    }
+
+}
+
+
+
+.close-btn {
+
+    position: absolute;
+
+    top: 15px;
+
+    right: 18px;
+
+    border: none;
+
+    background: transparent;
+
+    font-size: 24px;
+
+    cursor: pointer;
+
+    color: #666;
+
+    transition: .3s;
+
+}
+
+
+
+.close-btn:hover {
+
+    color: red;
+
+    transform: rotate(90deg);
+
+}
+
+
+
+.popup-box h2 {
+
+    text-align: center;
+
+    margin-bottom: 25px;
+
+    color: #333;
+
+    font-size: 30px;
+
+}
+
+
+
+.login-container,
+.register-container {
+
+    width: 100%;
+
+}
+
+
+
+.login-container input,
+.register-container input {
+
+    width: 100%;
+
+    padding: 13px 15px;
+
+    margin-bottom: 15px;
+
+    border: 1px solid #ddd;
+
+    border-radius: 10px;
+
+    font-size: 15px;
+
+    outline: none;
+
+    transition: .3s;
+
+    box-sizing: border-box;
+
+}
+
+
+
+.login-container input:focus,
+.register-container input:focus {
+
+    border-color: #ff7a00;
+
+    box-shadow: 0 0 8px rgba(255,122,0,.2);
+
+}
+
+
+
+.login-container button,
+.register-container button {
+
+    width: 100%;
+
+    padding: 13px;
+
+    border: none;
+
+    border-radius: 30px;
+
+    background: #ff7a00;
+
+    color: white;
+
+    font-size: 17px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    margin-top: 10px;
+
+    transition: .3s;
+
+}
+
+
+
+.login-container button:hover,
+.register-container button:hover {
+
+    background: #e66d00;
+
+    transform: translateY(-2px);
+
+}
+
+
+
+.switch-btn {
+
+    border: none;
+
+    background: none;
+
+    color: #ff7a00;
+
+    cursor: pointer;
+
+    font-weight: bold;
+
+    margin-top: 10px;
+
+    font-size: 15px;
+
+}
+
+
+
+.switch-btn:hover {
+
+    text-decoration: underline;
+
+}
+
+
+
+/* ===========================
+      Responsive
+=========================== */
+
+/* ===========================
+        Popup Overlay
+=========================== */
+
+.popup-overlay {
+
+    position: fixed;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+
+    background: rgba(0, 0, 0, 0.55);
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    padding: 20px;
+
+    z-index: 1000;
+
+}
+
+
+
+/* ===========================
+        Popup Box
+=========================== */
+
+.popup-box {
+
+    background: white;
+
+    width: 100%;
+    max-width: 760px;
+
+    padding: 40px;
+
+    border-radius: 20px;
+
+    box-shadow: 0 15px 40px rgba(0,0,0,.25);
+
+    position: relative;
+
+    animation: popupShow .35s ease;
+
+}
+
+
+
+/* ===========================
+        Animation
+=========================== */
+
+@keyframes popupShow {
+
+    from {
+
+        opacity: 0;
+
+        transform: scale(.85);
+
+    }
+
+    to {
+
+        opacity: 1;
+
+        transform: scale(1);
+
+    }
+
+}
+
+
+
+/* ===========================
+        Close Button
+=========================== */
+
+.close-btn {
+
+    position: absolute;
+
+    top: 18px;
+
+    right: 20px;
+
+    background: transparent;
+
+    border: none;
+
+    font-size: 24px;
+
+    cursor: pointer;
+
+    color: #666;
+
+    transition: .3s;
+
+}
+
+.close-btn:hover{
+
+    color:red;
+
+    transform: rotate(90deg);
+
+}
+
+
+
+/* ===========================
+        Heading
+=========================== */
+
+.popup-box h2{
+
+    text-align:center;
+
+    font-size:36px;
+
+    color:#333;
+
+    margin-bottom:30px;
+
+}
+
+
+
+/* ===========================
+        Login Form
+=========================== */
+
+.login-container{
+
+    width:100%;
+
+}
+
+.login-container form{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:18px;
+
+}
+
+
+
+/* ===========================
+      Register Form
+=========================== */
+
+.register-container{
+
+    width:100%;
+
+}
+
+.register-container form{
+
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:18px;
+
+}
+
+
+
+/* Address full width */
+
+.register-container input[name="address"]{
+
+    grid-column:1/3;
+
+}
+
+
+
+/* Register button full width */
+
+.register-container button{
+
+    grid-column:1/3;
+
+}
+
+
+
+/* ===========================
+        Inputs
+=========================== */
+
+.login-container input,
+.register-container input{
+
+    width:100%;
+
+    padding:14px 16px;
+
+    border:1px solid #ddd;
+
+    border-radius:10px;
+
+    font-size:15px;
+
+    outline:none;
+
+    transition:.3s;
+
+    box-sizing:border-box;
+
+}
+
+.login-container input:focus,
+.register-container input:focus{
+
+    border-color:#ff7a00;
+
+    box-shadow:0 0 8px rgba(255,122,0,.25);
+
+}
+
+
+
+/* ===========================
+        Buttons
+=========================== */
+
+.login-container button,
+.register-container button{
+
+    width:100%;
+
+    padding:14px;
+
+    border:none;
+
+    border-radius:30px;
+
+    background:#ff7a00;
+
+    color:white;
+
+    font-size:17px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+.login-container button:hover,
+.register-container button:hover{
+
+    background:#e66d00;
+
+    transform:translateY(-2px);
+
+}
+
+
+
+/* ===========================
+        Switch Button
+=========================== */
+
+.switch-btn{
+
+    border:none;
+
+    background:none;
+
+    color:#ff7a00;
+
+    cursor:pointer;
+
+    font-weight:bold;
+
+    margin-top:18px;
+
+    font-size:15px;
+
+}
+
+.switch-btn:hover{
+
+    text-decoration:underline;
+
+}
+
+
+
+/* ===========================
+        Tablet
+=========================== */
+
+@media(max-width:992px){
+
+    .popup-box{
+
+        max-width:650px;
+
+        padding:35px;
+
+    }
+
+}
+
+
+
+/* ===========================
+        Mobile
+=========================== */
+
+@media(max-width:768px){
+
+    .popup-overlay{
+
+        padding:15px;
+
+    }
+
+    .popup-box{
+
+        max-width:420px;
+
+        padding:30px;
+
+    }
+
+    .popup-box h2{
+
+        font-size:28px;
+
+    }
+
+    .register-container form{
+
+        display:flex;
+
+        flex-direction:column;
+
+        gap:15px;
+
+    }
+
+}
+
+
+
+/* ===========================
+      Small Mobile
+=========================== */
+
+@media(max-width:480px){
+
+    .popup-box{
+
+        padding:22px;
+
+        border-radius:15px;
+
+    }
+
+    .popup-box h2{
+
+        font-size:24px;
+
+        margin-bottom:20px;
+
+    }
+
+    .login-container input,
+    .register-container input{
+
+        padding:12px;
+
+        font-size:14px;
+
+    }
+
+    .login-container button,
+    .register-container button{
+
+        font-size:16px;
+
+        padding:12px;
+
+    }
+
+}
