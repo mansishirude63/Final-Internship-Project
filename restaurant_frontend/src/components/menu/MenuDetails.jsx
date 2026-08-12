@@ -52,7 +52,7 @@ function MenuDetails() {
       <div className="menu-details-card">
         <h2>{menu.name}</h2>
         <img
-          src={`https://djangobackend-htd9.onrender.com${menu.image}`}
+          src={`https://final-internship-project-kcp1.onrender.com{menu.image}`}
           alt={menu.name}
           className="details-image"
         />
