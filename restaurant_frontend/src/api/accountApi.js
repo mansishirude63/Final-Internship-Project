@@ -42,3 +42,5 @@ export const deleteUser = async (userId) => {
   );
   return response.data;
 };
+
+export default api;
