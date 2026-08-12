@@ -366,7 +366,7 @@ function MenuList() {
               {menu.image && (
 
                 <img
-                  src={`http://127.0.0.1:8000${menu.image}`}
+                  src={`https://final-internship-project-kcp1.onrender.com${menu.image}`}
                   alt={menu.name}
                   className="menu-image"
 
