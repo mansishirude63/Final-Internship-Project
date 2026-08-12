@@ -641,9 +641,9 @@ function GroupRoom() {
                     className="group-menu-category"
                 >
 
-                    <h1>
+                    <h2>
                         {title}
-                    </h1>
+                    </h2>
 
 
                     <div

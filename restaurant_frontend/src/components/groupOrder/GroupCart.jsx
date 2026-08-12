@@ -318,10 +318,13 @@ function GroupCart() {
                                 {item.menu_image && (
 
                                     <img
-                                        src={item.menu_image}
+                                        src={
+                                            `http://127.0.0.1:8000${item.menu_image}`
+                                        }
                                         alt={item.menu_name}
                                         className="group-cart-item-image"
                                     />
+
                                 )}
 
 
