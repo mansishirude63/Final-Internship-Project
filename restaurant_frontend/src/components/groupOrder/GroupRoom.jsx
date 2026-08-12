@@ -661,7 +661,7 @@ function GroupRoom() {
 
                                     <img
                                         src={
-                                            `http://127.0.0.1:8000${menu.image}`
+                                            `https://final-internship-project-kcp1.onrender.com${menu.image}`
                                         }
                                         alt={menu.name}
                                         className="group-menu-image"

@@ -319,7 +319,7 @@ function GroupCart() {
 
                                     <img
                                         src={
-                                            `http://127.0.0.1:8000${item.menu_image}`
+                                            `https://final-internship-project-kcp1.onrender.com${item.menu_image}`
                                         }
                                         alt={item.menu_name}
                                         className="group-cart-item-image"
