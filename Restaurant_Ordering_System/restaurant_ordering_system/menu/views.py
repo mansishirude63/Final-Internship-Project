@@ -6,6 +6,49 @@ from .serializers import MenuSerializer
 
 @api_view(['POST'])
 def add_menu(request):
+    # Import all menu items from menu_data.json
+    if isinstance(request.data, list):
+        created = 0
+
+        for item in request.data:
+            fields = item.get("fields", {})
+
+            # Avoid creating duplicates
+            if Menu.objects.filter(name=fields.get("name")).exists():
+                continue
+
+            Menu.objects.create(
+                name=fields.get("name"),
+                description=fields.get("description"),
+                category=fields.get("category"),
+                price=fields.get("price"),
+                is_available=fields.get("is_available", True),
+                image=fields.get("image")
+            )
+
+            created += 1
+
+        return Response({
+            "success": True,
+            "message": f"{created} menu items imported successfully"
+        }, status=status.HTTP_201_CREATED)
+
+    # Normal single-menu creation
+    serializer = MenuSerializer(data=request.data)
+
+    if serializer.is_valid():
+        serializer.save()
+
+        return Response({
+            "success": True,
+            "message": "Menu added successfully",
+            "menu": serializer.data
+        }, status=status.HTTP_201_CREATED)
+
+    return Response({
+        "success": False,
+        "error": serializer.errors
+    }, status=status.HTTP_400_BAD_REQUEST)
     serializer = MenuSerializer(data = request.data)
 
     if serializer.is_valid():
