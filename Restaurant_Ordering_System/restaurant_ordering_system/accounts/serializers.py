@@ -17,17 +17,19 @@ class RegisterSerializer(serializers.ModelSerializer):
             "status"
         ]
 
+        def create(self, validated_data):
 
-    def create(self, validated_data):
+            user = User.objects.create_user(
+                username=validated_data["username"],
+                email=validated_data["email"],
+                password=validated_data["password"],
+                address=validated_data.get("address")
+            )
 
-        user = User.objects.create_user(
-            username=validated_data["username"],
-            email=validated_data["email"],
-            password=validated_data["password"],
-            address=validated_data.get("address")
-        )
+            user.status = validated_data.get("status", "Customer")
+            user.save()
 
-        return user
+            return user
 
 
 class UserSerializer(serializers.ModelSerializer):

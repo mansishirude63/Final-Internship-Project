@@ -29,7 +29,7 @@ export const getUser = async (userId) => {
 // Update User
 export const updateUser = async (userId, userData) => {
   const response = await api.put(
-    `/accounts/update_User/int:user_id/`,
+    `/accounts/update_User/${userId}/`,
     userData
   );
   return response.data;
