@@ -141,11 +141,12 @@ function Navbar() {
 
             <>
 
-              <li>
-                <span className="user-name">
-                  👤 {user.username}
-                </span>
-              </li>
+              <Link
+                to={`/accounts/users/${user.id}`}
+                className="user-name"
+              >
+                👤 {user.username}
+              </Link>
 
               <li>
                 <button

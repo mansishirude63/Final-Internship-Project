@@ -126,20 +126,11 @@ function AddOrder() {
                 localStorage.getItem("userId");
 
 
-            const response =
-                await getUser(userId);
+            const response = await getUser(userId);
 
+            console.log("USER RESPONSE:", response);
 
-            console.log(
-                "USER RESPONSE:",
-                response.data
-            );
-
-
-            const userData =
-                response.data.user ||
-                response.data;
-
+            const userData = response.user;
 
             setUser(userData);
 

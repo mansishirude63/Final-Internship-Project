@@ -11,8 +11,9 @@ class RegisterSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "username",
+            "first_name",
+            "last_name",
             "email",
-            "password",
             "address",
             "status"
         ]
@@ -21,6 +22,8 @@ class RegisterSerializer(serializers.ModelSerializer):
 
         user = User.objects.create_user(
             username=validated_data["username"],
+            first_name=validated_data.get("first_name", ""),
+            last_name=validated_data.get("last_name", ""),
             email=validated_data["email"],
             password=validated_data["password"],
             address=validated_data.get("address")
@@ -39,6 +42,8 @@ class UserSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "username",
+            "first_name",
+            "last_name",
             "email",
             "address",
             "status"

@@ -77,15 +77,23 @@
 /* Username */
 
 .user-name {
-  background: white;
-  color: #ff7a00;
+  background: white !important;
+  color: #ff7a00 !important;
   padding: 8px 16px;
   border-radius: 25px;
   font-weight: 600;
   font-size: 15px;
+  text-decoration: none !important;
   box-shadow: 0 3px 10px rgba(0, 0, 0, .15);
+  cursor: pointer;
+  display: inline-block;
 }
 
+.user-name:hover {
+  background: white !important;
+  color: #ff7a00 !important;
+  text-decoration: none !important;
+}
 /* Logout */
 
 .logout-btn {
@@ -1162,7 +1170,7 @@
 .edit-user-container h2 {
   text-align: center;
   color: #ff5722;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
 }
 
 .edit-user-container form {
@@ -1171,11 +1179,25 @@
   gap: 15px;
 }
 
-.edit-user-container input {
+.edit-user-container input,
+.edit-user-container textarea {
   padding: 12px;
   border: 1px solid #ccc;
   border-radius: 8px;
   font-size: 16px;
+  font-family: inherit;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.edit-user-container input:focus,
+.edit-user-container textarea:focus {
+  border-color: #ff5722;
+}
+
+.edit-user-container textarea {
+  resize: vertical;
+  min-height: 100px;
 }
 
 .edit-user-container button {
@@ -1186,11 +1208,91 @@
   border-radius: 8px;
   font-size: 17px;
   cursor: pointer;
+  transition: 0.2s;
 }
 
 .edit-user-container button:hover {
   background: #e64a19;
 }
+
+/* Cancel button */
+.edit-user-container button[type="button"] {
+  background: #777;
+}
+
+.edit-user-container button[type="button"]:hover {
+  background: #555;
+}
+
+.user-details-container {
+  width: 500px;
+  margin: 50px auto;
+  padding: 30px;
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.user-details-container h2 {
+  text-align: center;
+  color: #ff5722;
+  margin-bottom: 25px;
+}
+
+.user-card {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.user-card p {
+  margin: 0;
+  padding: 12px 15px;
+  background: #fff7f0;
+  border-radius: 8px;
+  font-size: 16px;
+  color: #333;
+  word-break: break-word;
+}
+
+.user-card p strong {
+  color: #ff5722;
+}
+
+/* Change Information button */
+
+.change-information-btn {
+  margin-top: 10px;
+  padding: 12px;
+  background: #ff5722;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.change-information-btn:hover {
+  background: #e64a19;
+}
+
+.back-button {
+  padding: 8px 15px;
+  background: #777;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  cursor: pointer;
+  margin-bottom: 15px;
+}
+
+.back-button:hover {
+  background: #555;
+}
+
 
 .menu-list-container {
   width: 90%;

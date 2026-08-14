@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import api from "../../api/accountApi";
+
+import { getUser, updateUser } from "../../api/accountApi";
 
 function EditUser() {
   const { id } = useParams();
@@ -11,21 +12,46 @@ function EditUser() {
     first_name: "",
     last_name: "",
     email: "",
+    address: "",
   });
 
-  useEffect(() => {
-    getUser();
-  }, []);
+  const [loading, setLoading] = useState(true);
 
-  const getUser = async () => {
+  // -----------------------------------------
+  // GET USER
+  // -----------------------------------------
+
+  useEffect(() => {
+    fetchUser();
+  }, [id]);
+
+  const fetchUser = async () => {
     try {
-      const response = await api.get(`accounts/users/${id}/`);
-      setUser(response.data);
+      const response = await getUser(id);
+
+      console.log("USER RESPONSE:", response);
+
+      const userData = response.user || response;
+
+      setUser({
+        username: userData.username || "",
+        first_name: userData.first_name || "",
+        last_name: userData.last_name || "",
+        email: userData.email || "",
+        address: userData.address || "",
+      });
+
+      setLoading(false);
     } catch (error) {
-      console.log(error);
+      console.log("GET USER ERROR:", error);
       alert("Failed to fetch user");
+      setLoading(false);
     }
   };
+
+  // -----------------------------------------
+  // HANDLE INPUT
+  // -----------------------------------------
 
   const handleChange = (e) => {
     setUser({
@@ -34,24 +60,88 @@ function EditUser() {
     });
   };
 
+  // -----------------------------------------
+  // UPDATE USER
+  // -----------------------------------------
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      await api.put(`accounts/users/${id}/`, user);
-      alert("User Updated Successfully");
-      navigate("/users");
+      const response = await updateUser(id, {
+        username: user.username,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        email: user.email,
+        address: user.address,
+      });
+
+      console.log("UPDATE RESPONSE:", response);
+
+      // Update localStorage user information
+      const storedUser = localStorage.getItem("user");
+
+      if (storedUser) {
+        const oldUser = JSON.parse(storedUser);
+
+        const updatedUser = {
+          ...oldUser,
+          username: user.username,
+          first_name: user.first_name,
+          last_name: user.last_name,
+          email: user.email,
+          address: user.address,
+        };
+
+        localStorage.setItem(
+          "user",
+          JSON.stringify(updatedUser)
+        );
+      }
+
+      alert("User information updated successfully!");
+
+      navigate(-1);
+
     } catch (error) {
-      console.log(error);
-      alert("Update Failed");
+      console.log("UPDATE USER ERROR:", error);
+
+      console.log(
+        "BACKEND RESPONSE:",
+        error.response?.data
+      );
+
+      alert(
+        error.response?.data?.message ||
+        "Failed to update user information"
+      );
     }
   };
 
+  // -----------------------------------------
+  // LOADING
+  // -----------------------------------------
+
+  if (loading) {
+    return (
+      <div className="edit-user-container">
+        <h2>Loading...</h2>
+      </div>
+    );
+  }
+
+  // -----------------------------------------
+  // UI
+  // -----------------------------------------
+
   return (
     <div className="edit-user-container">
-      <h2>Edit User</h2>
+
+      <h2>Edit User Information</h2>
 
       <form onSubmit={handleSubmit}>
+
+        {/* USERNAME */}
 
         <input
           type="text"
@@ -61,6 +151,8 @@ function EditUser() {
           onChange={handleChange}
         />
 
+        {/* FIRST NAME */}
+
         <input
           type="text"
           name="first_name"
@@ -68,6 +160,8 @@ function EditUser() {
           value={user.first_name}
           onChange={handleChange}
         />
+
+        {/* LAST NAME */}
 
         <input
           type="text"
@@ -77,6 +171,8 @@ function EditUser() {
           onChange={handleChange}
         />
 
+        {/* EMAIL */}
+
         <input
           type="email"
           name="email"
@@ -85,9 +181,33 @@ function EditUser() {
           onChange={handleChange}
         />
 
-        <button type="submit">Update User</button>
+        {/* ADDRESS */}
+
+        <textarea
+          name="address"
+          placeholder="Delivery Address"
+          value={user.address}
+          onChange={handleChange}
+          rows="4"
+        />
+
+        {/* UPDATE BUTTON */}
+
+        <button type="submit">
+          Save Changes
+        </button>
+
+        {/* CANCEL BUTTON */}
+
+        <button
+          type="button"
+          onClick={() => navigate(-1)}
+        >
+          Cancel
+        </button>
 
       </form>
+
     </div>
   );
 }

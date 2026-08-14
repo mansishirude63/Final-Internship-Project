@@ -21,7 +21,7 @@ export const getAllUsers = async () => {
 // Get User By ID
 export const getUser = async (userId) => {
   const response = await api.get(
-    `/accounts/get_user_by_Id/int:user_id/`
+    `/accounts/get_user_by_Id/${userId}/`
   );
   return response.data;
 };
