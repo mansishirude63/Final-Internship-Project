@@ -1223,6 +1223,31 @@
 .edit-user-container button[type="button"]:hover {
   background: #555;
 }
+@media (max-width: 600px) {
+  .edit-user-container {
+    width: 90%;
+    margin: 30px auto;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+
+  .edit-user-container h2 {
+    font-size: 22px;
+  }
+
+  .edit-user-container input,
+  .edit-user-container textarea {
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 15px;
+  }
+
+  .edit-user-container button {
+    width: 100%;
+    font-size: 16px;
+  }
+}
+
 
 .user-details-container {
   width: 500px;
@@ -1291,6 +1316,33 @@
 
 .back-button:hover {
   background: #555;
+}
+
+@media (max-width: 600px) {
+  .user-details-container {
+    width: 90%;
+    margin: 30px auto;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+
+  .user-details-container h2 {
+    font-size: 22px;
+  }
+
+  .user-card p {
+    font-size: 15px;
+    padding: 10px;
+  }
+
+  .change-information-btn {
+    width: 100%;
+    font-size: 16px;
+  }
+
+  .back-button {
+    font-size: 14px;
+  }
 }
 
 
