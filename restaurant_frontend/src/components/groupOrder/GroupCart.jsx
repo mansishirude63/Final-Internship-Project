@@ -316,17 +316,12 @@ function GroupCart() {
 
 
                                 {item.menu_image && (
-
                                     <img
-                                        src={
-                                            `https://final-internship-project-kcp1.onrender.com${item.menu_image}`
-                                        }
+                                        src={item.menu_image}
                                         alt={item.menu_name}
                                         className="group-cart-item-image"
                                     />
-
                                 )}
-
 
                                 <div className="group-cart-item-info">
 
