@@ -4255,3 +4255,31 @@
   }
 
 }
+
+.staff-delivery-container h1 {
+    margin-bottom: 20px;
+}
+
+.delivery-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+    width: 100%;
+    padding: 20px;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+}
+
+.delivery-card > div {
+    flex: 1;
+}
+
+.delivery-card select {
+    padding: 10px;
+}
+
+/* No movement on hover */
+.delivery-card:hover {
+    transform: none !important;
+}

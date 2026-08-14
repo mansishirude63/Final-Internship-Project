@@ -37,6 +37,8 @@ import GroupOrder from './components/groupOrder/GroupOrder';
 import GroupRoom from './components/groupOrder/GroupRoom';
 import GroupCart from './components/groupOrder/GroupCart';
 
+import StaffDelivery from "./components/StaffDelivery";
+
 
 function App() {
 
@@ -80,6 +82,7 @@ function App() {
       <Route path="/group-order/:groupCode" element={<GroupRoom />}/>
       <Route path="/group-order/:groupCode/cart" element={<GroupCart />}/>
 
+      <Route path="/admin" element={<StaffDelivery />}/>
 
 
     </Routes>
