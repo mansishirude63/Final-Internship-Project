@@ -1,4 +1,3 @@
-
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
@@ -26,13 +25,9 @@ def place_order(request):
 
     user_id = request.data.get("user")
     new_address = request.data.get("address")
-
-    # Present only for group orders
     group_code = request.data.get("group_code")
 
-
     if not user_id:
-
         return Response(
             {
                 "success": False,
@@ -41,34 +36,15 @@ def place_order(request):
             status=status.HTTP_400_BAD_REQUEST
         )
 
-
     try:
 
-        # ====================================================
-        # GET USER
-        # ====================================================
-
-        user = User.objects.get(
-            id=user_id
-        )
-
-
-        # ====================================================
-        # UPDATE ADDRESS
-        # ====================================================
+        user = User.objects.get(id=user_id)
 
         if new_address:
-
             user.address = new_address
             user.save()
 
-
-        # ====================================================
-        # CHECK ADDRESS
-        # ====================================================
-
         if not user.address:
-
             return Response(
                 {
                     "success": False,
@@ -77,19 +53,13 @@ def place_order(request):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-
         # ====================================================
         # GROUP ORDER
         # ====================================================
 
         if group_code:
 
-            # ------------------------------------------------
-            # GET GROUP
-            # ------------------------------------------------
-
             try:
-
                 group_order = GroupOrder.objects.get(
                     group_code=group_code.upper()
                 )
@@ -104,11 +74,6 @@ def place_order(request):
                     status=status.HTTP_404_NOT_FOUND
                 )
 
-
-            # ------------------------------------------------
-            # CHECK GROUP STATUS
-            # ------------------------------------------------
-
             if group_order.status in [
                 "Completed",
                 "Cancelled"
@@ -117,43 +82,29 @@ def place_order(request):
                 return Response(
                     {
                         "success": False,
-                        "message":
-                            "This group order is no longer active"
+                        "message": "This group order is no longer active"
                     },
                     status=status.HTTP_400_BAD_REQUEST
                 )
-
-
-            # ------------------------------------------------
-            # CHECK GROUP MEMBER
-            # ------------------------------------------------
 
             is_member = GroupMember.objects.filter(
                 group_order=group_order,
                 user_id=user_id
             ).exists()
 
-
             if not is_member:
 
                 return Response(
                     {
                         "success": False,
-                        "message":
-                            "You are not a member of this group"
+                        "message": "You are not a member of this group"
                     },
                     status=status.HTTP_403_FORBIDDEN
                 )
 
-
-            # ------------------------------------------------
-            # GET GROUP CART
-            # ------------------------------------------------
-
             group_cart_items = GroupCartItem.objects.filter(
                 group_order=group_order
             )
-
 
             if not group_cart_items.exists():
 
@@ -165,13 +116,7 @@ def place_order(request):
                     status=status.HTTP_400_BAD_REQUEST
                 )
 
-
-            # ------------------------------------------------
-            # CALCULATE TOTAL
-            # ------------------------------------------------
-
             total_price = 0
-
 
             for item in group_cart_items:
 
@@ -180,117 +125,57 @@ def place_order(request):
                     item.quantity
                 )
 
-
-            # ------------------------------------------------
-            # FIND DELIVERY PERSON
-            # ------------------------------------------------
-
             delivery_person = User.objects.filter(
                 status="Staff"
             ).first()
-
 
             if not delivery_person:
 
                 return Response(
                     {
                         "success": False,
-                        "message":
-                            "No Staff delivery person available"
+                        "message": "No Staff delivery person available"
                     },
                     status=status.HTTP_400_BAD_REQUEST
                 )
 
-
-            # ------------------------------------------------
-            # CREATE ORDER
-            # ------------------------------------------------
-
             order = Order.objects.create(
-
                 user=user,
-
                 address=user.address,
-
                 total_price=total_price
-
             )
-
-
-            # ------------------------------------------------
-            # CREATE DELIVERY
-            # ------------------------------------------------
 
             Delivery.objects.create(
-
                 order=order,
-
                 delivery_address=user.address,
-
                 delivery_person=delivery_person,
-
                 delivery_status="Preparing"
-
             )
-
-
-            # ------------------------------------------------
-            # CREATE ORDER ITEMS
-            # ------------------------------------------------
 
             for item in group_cart_items:
 
                 OrderItem.objects.create(
-
                     order=order,
-
                     menu=item.menu,
-
                     quantity=item.quantity,
-
                     price=item.menu.price
-
                 )
-
-
-            # ------------------------------------------------
-            # CLEAR GROUP CART
-            # ------------------------------------------------
 
             group_cart_items.delete()
 
-
-            # ------------------------------------------------
-            # UPDATE GROUP STATUS
-            # ------------------------------------------------
-
             group_order.status = "Confirmed"
-
             group_order.save()
 
-
-            # ------------------------------------------------
-            # RESPONSE
-            # ------------------------------------------------
-
-            serializer = OrderSerializer(
-                order
-            )
-
+            serializer = OrderSerializer(order)
 
             return Response(
                 {
                     "success": True,
-
-                    "message":
-                        "Group order placed successfully",
-
-                    "order":
-                        serializer.data
+                    "message": "Group order placed successfully",
+                    "order": serializer.data
                 },
                 status=status.HTTP_201_CREATED
             )
-
 
         # ====================================================
         # NORMAL ORDER
@@ -298,14 +183,9 @@ def place_order(request):
 
         else:
 
-            # ------------------------------------------------
-            # GET NORMAL CART
-            # ------------------------------------------------
-
             cart_items = Cart.objects.filter(
                 user_id=user_id
             )
-
 
             if not cart_items.exists():
 
@@ -317,13 +197,7 @@ def place_order(request):
                     status=status.HTTP_400_BAD_REQUEST
                 )
 
-
-            # ------------------------------------------------
-            # CALCULATE TOTAL
-            # ------------------------------------------------
-
             total_price = 0
-
 
             for item in cart_items:
 
@@ -332,112 +206,54 @@ def place_order(request):
                     item.quantity
                 )
 
-
-            # ------------------------------------------------
-            # FIND DELIVERY PERSON
-            # ------------------------------------------------
-
             delivery_person = User.objects.filter(
                 status="Staff"
             ).first()
-
 
             if not delivery_person:
 
                 return Response(
                     {
                         "success": False,
-                        "message":
-                            "No Staff delivery person available"
+                        "message": "No Staff delivery person available"
                     },
                     status=status.HTTP_400_BAD_REQUEST
                 )
 
-
-            # ------------------------------------------------
-            # CREATE ORDER
-            # ------------------------------------------------
-
             order = Order.objects.create(
-
                 user=user,
-
                 address=user.address,
-
                 total_price=total_price
-
             )
-
-
-            # ------------------------------------------------
-            # CREATE DELIVERY
-            # ------------------------------------------------
 
             Delivery.objects.create(
-
                 order=order,
-
                 delivery_address=user.address,
-
                 delivery_person=delivery_person,
-
                 delivery_status="Preparing"
-
             )
-
-
-            # ------------------------------------------------
-            # CREATE ORDER ITEMS
-            # ------------------------------------------------
 
             for item in cart_items:
 
                 OrderItem.objects.create(
-
                     order=order,
-
                     menu=item.menu,
-
                     quantity=item.quantity,
-
                     price=item.menu.price
-
                 )
-
-
-            # ------------------------------------------------
-            # CLEAR NORMAL CART
-            # ------------------------------------------------
 
             cart_items.delete()
 
-
-            # ------------------------------------------------
-            # RESPONSE
-            # ------------------------------------------------
-
-            serializer = OrderSerializer(
-                order
-            )
-
+            serializer = OrderSerializer(order)
 
             return Response(
                 {
                     "success": True,
-
-                    "message":
-                        "Order placed successfully",
-
-                    "order":
-                        serializer.data
+                    "message": "Order placed successfully",
+                    "order": serializer.data
                 },
                 status=status.HTTP_201_CREATED
             )
-
-
-    # ========================================================
-    # USER NOT FOUND
-    # ========================================================
 
     except User.DoesNotExist:
 
@@ -448,11 +264,6 @@ def place_order(request):
             },
             status=status.HTTP_404_NOT_FOUND
         )
-
-
-    # ========================================================
-    # OTHER ERROR
-    # ========================================================
 
     except Exception as e:
 
@@ -538,9 +349,7 @@ def get_order_by_id(request, order_id):
             id=order_id
         )
 
-        serializer = OrderSerializer(
-            order
-        )
+        serializer = OrderSerializer(order)
 
         return Response(
             {
@@ -584,13 +393,11 @@ def update_order(request, order_id):
             status=status.HTTP_404_NOT_FOUND
         )
 
-
     serializer = OrderSerializer(
         order,
         data=request.data,
         partial=True
     )
-
 
     if serializer.is_valid():
 
@@ -599,22 +406,121 @@ def update_order(request, order_id):
         return Response(
             {
                 "success": True,
-                "message":
-                    "Order updated successfully",
-                "order":
-                    serializer.data
+                "message": "Order updated successfully",
+                "order": serializer.data
             },
             status=status.HTTP_200_OK
         )
 
-
     return Response(
         {
             "success": False,
-            "errors":
-                serializer.errors
+            "errors": serializer.errors
         },
         status=status.HTTP_400_BAD_REQUEST
+    )
+
+
+# ============================================================
+# CANCEL ORDER
+# ============================================================
+
+@api_view(["PATCH"])
+def cancel_order(request, order_id):
+
+    user_id = request.data.get("user")
+
+    if not user_id:
+
+        return Response(
+            {
+                "success": False,
+                "message": "User id is required"
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    try:
+
+        order = Order.objects.get(
+            id=order_id
+        )
+
+    except Order.DoesNotExist:
+
+        return Response(
+            {
+                "success": False,
+                "message": "Order not found"
+            },
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+    # Check order ownership
+
+    if order.user_id != int(user_id):
+
+        return Response(
+            {
+                "success": False,
+                "message": "You can cancel only your own order"
+            },
+            status=status.HTTP_403_FORBIDDEN
+        )
+
+    # Delivered order cannot be cancelled
+
+    if order.status == "Delivered":
+
+        return Response(
+            {
+                "success": False,
+                "message": "Delivered orders cannot be cancelled"
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    # Already cancelled
+
+    if order.status == "Cancelled":
+
+        return Response(
+            {
+                "success": False,
+                "message": "Order is already cancelled"
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    # Cancel order
+
+    order.status = "Cancelled"
+    order.save()
+
+    # Update delivery status too
+
+    try:
+
+        delivery = Delivery.objects.get(
+            order=order
+        )
+
+        delivery.delivery_status = "Cancelled"
+        delivery.save()
+
+    except Delivery.DoesNotExist:
+
+        pass
+
+    serializer = OrderSerializer(order)
+
+    return Response(
+        {
+            "success": True,
+            "message": "Order cancelled successfully",
+            "order": serializer.data
+        },
+        status=status.HTTP_200_OK
     )
 
 
@@ -636,8 +542,7 @@ def delete_order(request, order_id):
         return Response(
             {
                 "success": True,
-                "message":
-                    "Order deleted successfully"
+                "message": "Order deleted successfully"
             },
             status=status.HTTP_200_OK
         )
@@ -656,22 +561,6 @@ def delete_order(request, order_id):
 # ============================================================
 # CONFIRM GROUP ORDER
 # ============================================================
-#
-# Kept for your existing API.
-#
-# Your new flow uses:
-#
-# GroupCart
-#     ↓
-# AddOrder
-#     ↓
-# place_order()
-#     ↓
-# Payment
-#     ↓
-# Delivery
-#
-# ============================================================
 
 @api_view(["POST"])
 def confirm_group_order(request):
@@ -679,7 +568,6 @@ def confirm_group_order(request):
     group_code = request.data.get("group_code")
     user_id = request.data.get("user")
     new_address = request.data.get("address")
-
 
     if not group_code:
 
@@ -691,7 +579,6 @@ def confirm_group_order(request):
             status=status.HTTP_400_BAD_REQUEST
         )
 
-
     if not user_id:
 
         return Response(
@@ -702,37 +589,30 @@ def confirm_group_order(request):
             status=status.HTTP_400_BAD_REQUEST
         )
 
-
     try:
 
         user = User.objects.get(
             id=user_id
         )
 
-
         group_order = GroupOrder.objects.get(
             group_code=group_code.upper()
         )
 
-
-        # Check member
         is_member = GroupMember.objects.filter(
             group_order=group_order,
             user_id=user_id
         ).exists()
-
 
         if not is_member:
 
             return Response(
                 {
                     "success": False,
-                    "message":
-                        "You are not a member of this group"
+                    "message": "You are not a member of this group"
                 },
                 status=status.HTTP_403_FORBIDDEN
             )
-
 
         if group_order.status in [
             "Completed",
@@ -742,17 +622,14 @@ def confirm_group_order(request):
             return Response(
                 {
                     "success": False,
-                    "message":
-                        "This group order is no longer active"
+                    "message": "This group order is no longer active"
                 },
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-
         group_cart_items = GroupCartItem.objects.filter(
             group_order=group_order
         )
-
 
         if not group_cart_items.exists():
 
@@ -764,13 +641,10 @@ def confirm_group_order(request):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-
         if new_address:
 
             user.address = new_address
-
             user.save()
-
 
         if not user.address:
 
@@ -782,9 +656,7 @@ def confirm_group_order(request):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-
         total_price = 0
-
 
         for item in group_cart_items:
 
@@ -793,89 +665,57 @@ def confirm_group_order(request):
                 item.quantity
             )
 
-
         delivery_person = User.objects.filter(
             status="Staff"
         ).first()
-
 
         if not delivery_person:
 
             return Response(
                 {
                     "success": False,
-                    "message":
-                        "No Staff delivery person available"
+                    "message": "No Staff delivery person available"
                 },
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-
         order = Order.objects.create(
-
             user=user,
-
             address=user.address,
-
             total_price=total_price
-
         )
-
 
         Delivery.objects.create(
-
             order=order,
-
             delivery_address=user.address,
-
             delivery_person=delivery_person,
-
             delivery_status="Preparing"
-
         )
-
 
         for item in group_cart_items:
 
             OrderItem.objects.create(
-
                 order=order,
-
                 menu=item.menu,
-
                 quantity=item.quantity,
-
                 price=item.menu.price
-
             )
-
 
         group_cart_items.delete()
 
-
         group_order.status = "Confirmed"
-
         group_order.save()
 
-
-        serializer = OrderSerializer(
-            order
-        )
-
+        serializer = OrderSerializer(order)
 
         return Response(
             {
                 "success": True,
-
-                "message":
-                    "Group order confirmed successfully",
-
-                "order":
-                    serializer.data
+                "message": "Group order confirmed successfully",
+                "order": serializer.data
             },
             status=status.HTTP_201_CREATED
         )
-
 
     except User.DoesNotExist:
 
@@ -887,7 +727,6 @@ def confirm_group_order(request):
             status=status.HTTP_404_NOT_FOUND
         )
 
-
     except GroupOrder.DoesNotExist:
 
         return Response(
@@ -897,7 +736,6 @@ def confirm_group_order(request):
             },
             status=status.HTTP_404_NOT_FOUND
         )
-
 
     except Exception as e:
 

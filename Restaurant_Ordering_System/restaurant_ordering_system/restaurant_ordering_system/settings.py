@@ -28,7 +28,7 @@ DEBUG = True
 CORS_ALLOW_ALL_ORIGINS = True
 
 ALLOWED_HOSTS = [
-     "final-internship-project-kcp1.onrender.com",
+    #  "final-internship-project-kcp1.onrender.com",
     "127.0.0.1",
     "localhost",
 ]
