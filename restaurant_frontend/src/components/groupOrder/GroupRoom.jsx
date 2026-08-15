@@ -22,38 +22,29 @@ function GroupRoom() {
     const [groupCart, setGroupCart] = useState([]);
 
     const [search, setSearch] = useState("");
+    const [selectedCategory, setSelectedCategory] = useState("All");
+    const [selectedFoodType, setSelectedFoodType] = useState("All");
 
     const [loading, setLoading] = useState(true);
     const [addingItem, setAddingItem] = useState(null);
 
+    // Add popup
     const [showAddPopup, setShowAddPopup] = useState(false);
     const [addedItemName, setAddedItemName] = useState("");
 
-    // ================================
-    // GROUP BUDGET
-    // ================================
-
-    const [showBudgetPopup, setShowBudgetPopup] =
-        useState(false);
-
-    const [groupBudget, setGroupBudget] =
-        useState("");
-
-    const [budgetMeals, setBudgetMeals] =
-        useState([]);
-
-    const [budgetSearched, setBudgetSearched] =
-        useState(false);
-
-    const [addingBudgetMeal, setAddingBudgetMeal] =
-        useState(false);
+    // Group budget
+    const [showBudgetPopup, setShowBudgetPopup] = useState(false);
+    const [groupBudget, setGroupBudget] = useState("");
+    const [budgetMeals, setBudgetMeals] = useState([]);
+    const [budgetSearched, setBudgetSearched] = useState(false);
+    const [addingBudgetMeal, setAddingBudgetMeal] = useState(false);
 
     const userId = localStorage.getItem("userId");
 
 
-    // ================================
+    // =========================================
     // LOAD GROUP
-    // ================================
+    // =========================================
 
     useEffect(() => {
 
@@ -78,15 +69,17 @@ function GroupRoom() {
                 menuResponse,
                 cartResponse
             ] = await Promise.all([
+
                 getGroupOrder(groupCode),
                 getMenus(),
                 getGroupCart(groupCode)
+
             ]);
 
             setGroup(groupResponse);
 
             setMenus(
-                menuResponse.data.menu
+                menuResponse.data.menu || []
             );
 
             setGroupCart(
@@ -99,6 +92,7 @@ function GroupRoom() {
 
             alert(
                 error.response?.data?.error ||
+                error.response?.data?.message ||
                 "Failed to load group."
             );
 
@@ -111,9 +105,24 @@ function GroupRoom() {
     };
 
 
-    // ================================
+    // =========================================
+    // CHECK IF ITEM IS IN GROUP CART
+    // =========================================
+
+    const isItemInGroupCart = (menuId) => {
+
+        return groupCart.some(
+            (item) =>
+                String(item.menu) === String(menuId) ||
+                String(item.menu_id) === String(menuId)
+        );
+
+    };
+
+
+    // =========================================
     // ADD TO GROUP CART
-    // ================================
+    // =========================================
 
     const addToGroupCart = async (menu) => {
 
@@ -136,7 +145,6 @@ function GroupRoom() {
             );
 
             setAddedItemName(menu.name);
-
             setShowAddPopup(true);
 
         } catch (error) {
@@ -145,6 +153,7 @@ function GroupRoom() {
 
             alert(
                 error.response?.data?.error ||
+                error.response?.data?.message ||
                 "Failed to add item."
             );
 
@@ -157,9 +166,9 @@ function GroupRoom() {
     };
 
 
-    // ================================
-    // REMOVE ITEM
-    // ================================
+    // =========================================
+    // REMOVE GROUP CART ITEM
+    // =========================================
 
     const removeFromGroupCart = async (itemId) => {
 
@@ -179,6 +188,7 @@ function GroupRoom() {
 
             alert(
                 error.response?.data?.error ||
+                error.response?.data?.message ||
                 "Failed to remove item."
             );
 
@@ -187,24 +197,24 @@ function GroupRoom() {
     };
 
 
-    // ================================
+    // =========================================
     // TOTAL
-    // ================================
+    // =========================================
 
     const calculateTotal = () => {
 
         return groupCart.reduce(
             (total, item) =>
-                total + Number(item.total_price),
+                total + Number(item.total_price || 0),
             0
         );
 
     };
 
 
-    // ================================
+    // =========================================
     // CHECK MY ITEM
-    // ================================
+    // =========================================
 
     const isMyItem = (item) => {
 
@@ -214,21 +224,22 @@ function GroupRoom() {
     };
 
 
-    // ================================
-    // GROUP MEMBERS COUNT
-    // ================================
+    // =========================================
+    // MEMBER COUNT
+    // =========================================
 
     const memberCount =
         group?.members?.length || 1;
 
 
-    // ================================
-    // GENERATE GROUP BUDGET MEALS
-    // ================================
+    // =========================================
+    // GROUP BUDGET MEALS
+    // =========================================
 
     const generateGroupBudgetMeals = () => {
 
-        const amount = Number(groupBudget);
+        const amount =
+            Number(groupBudget);
 
         if (!amount || amount <= 0) {
 
@@ -240,12 +251,11 @@ function GroupRoom() {
 
         }
 
-
-        const availableItems = menus.filter(
-            menu =>
-                Number(menu.price) <= amount
-        );
-
+        const availableItems =
+            menus.filter(
+                menu =>
+                    Number(menu.price) <= amount
+            );
 
         if (availableItems.length === 0) {
 
@@ -256,13 +266,10 @@ function GroupRoom() {
 
         }
 
-
         const combinations = [];
 
 
-        // ============================
-        // SINGLE ITEM
-        // ============================
+        // Single / Two / Three items
 
         for (
             let i = 0;
@@ -277,12 +284,13 @@ function GroupRoom() {
                 Number(item1.price);
 
 
+            // Single item
+
             if (total1 <= amount) {
 
                 combinations.push({
 
                     items: [item1],
-
                     total: total1
 
                 });
@@ -290,9 +298,7 @@ function GroupRoom() {
             }
 
 
-            // ============================
-            // TWO ITEMS
-            // ============================
+            // Two + Three items
 
             for (
                 let j = i + 1;
@@ -324,9 +330,7 @@ function GroupRoom() {
                 }
 
 
-                // ============================
-                // THREE ITEMS
-                // ============================
+                // Three items
 
                 for (
                     let k = j + 1;
@@ -366,9 +370,7 @@ function GroupRoom() {
         }
 
 
-        // ============================
-        // REMOVE DUPLICATES
-        // ============================
+        // Remove duplicates
 
         const uniqueMeals =
             combinations.filter(
@@ -379,7 +381,6 @@ function GroupRoom() {
                             .map(item => item.id)
                             .sort()
                             .join("-");
-
 
                     return (
                         index ===
@@ -395,7 +396,6 @@ function GroupRoom() {
                                         .sort()
                                         .join("-");
 
-
                                 return (
                                     ids ===
                                     otherIds
@@ -409,14 +409,11 @@ function GroupRoom() {
             );
 
 
-        // ============================
-        // SORT MEALS
-        // ============================
+        // Sort
 
         uniqueMeals.sort(
             (a, b) => {
 
-                // Prefer more items
                 if (
                     b.items.length !==
                     a.items.length
@@ -429,16 +426,11 @@ function GroupRoom() {
 
                 }
 
-                // Closest to budget
                 return b.total - a.total;
 
             }
         );
 
-
-        // ============================
-        // SHOW BEST 6
-        // ============================
 
         setBudgetMeals(
             uniqueMeals.slice(0, 6)
@@ -449,94 +441,93 @@ function GroupRoom() {
     };
 
 
-    // ================================
+    // =========================================
     // ADD COMPLETE BUDGET MEAL
-    // ================================
+    // =========================================
 
-    const addGroupBudgetMeal = async (meal) => {
+    const addGroupBudgetMeal =
+        async (meal) => {
 
-        try {
+            try {
 
-            setAddingBudgetMeal(true);
+                setAddingBudgetMeal(true);
 
+                for (
+                    const item of meal.items
+                ) {
 
-            for (
-                const item of meal.items
-            ) {
+                    await addGroupCartItem(
+                        groupCode,
+                        userId,
+                        item.id,
+                        1
+                    );
 
-                await addGroupCartItem(
-                    groupCode,
-                    userId,
-                    item.id,
-                    1
+                }
+
+                const cartResponse =
+                    await getGroupCart(
+                        groupCode
+                    );
+
+                setGroupCart(
+                    cartResponse.items || []
                 );
+
+                setShowBudgetPopup(false);
+                setBudgetSearched(false);
+                setBudgetMeals([]);
+                setGroupBudget("");
+
+                setAddedItemName(
+                    meal.items
+                        .map(
+                            item => item.name
+                        )
+                        .join(", ")
+                );
+
+                setShowAddPopup(true);
+
+            } catch (error) {
+
+                console.log(error);
+
+                alert(
+                    error.response?.data?.error ||
+                    error.response?.data?.message ||
+                    "Failed to add group meal."
+                );
+
+            } finally {
+
+                setAddingBudgetMeal(false);
 
             }
 
-
-            const cartResponse =
-                await getGroupCart(groupCode);
+        };
 
 
-            setGroupCart(
-                cartResponse.items || []
-            );
-
-
-            setShowBudgetPopup(false);
-
-            setBudgetSearched(false);
-
-            setBudgetMeals([]);
-
-            setGroupBudget("");
-
-
-            setAddedItemName(
-                meal.items
-                    .map(item => item.name)
-                    .join(", ")
-            );
-
-
-            setShowAddPopup(true);
-
-        } catch (error) {
-
-            console.log(error);
-
-            alert(
-                error.response?.data?.error ||
-                "Failed to add group meal."
-            );
-
-        } finally {
-
-            setAddingBudgetMeal(false);
-
-        }
-
-    };
-
-
-    // ================================
+    // =========================================
     // LOADING
-    // ================================
+    // =========================================
 
     if (loading) {
 
         return (
+
             <div className="group-loading">
                 Loading group...
             </div>
+
         );
 
     }
 
 
-    // ================================
+    // =========================================
     // GROUP NOT FOUND
-    // ================================
+    // =========================================
 
     if (!group) {
 
@@ -563,37 +554,57 @@ function GroupRoom() {
     }
 
 
-    // ================================
-    // SEARCH
-    // ================================
+    // =========================================
+    // SEARCH + FILTERS
+    // =========================================
 
     const filteredMenus =
-        menus.filter(menu => {
+        menus.filter((menu) => {
 
             const searchText =
                 search
                     .toLowerCase()
                     .trim();
 
-
-            return (
+            const matchesSearch =
 
                 menu.name
                     .toLowerCase()
                     .includes(searchText) ||
 
-                menu.description
+                (menu.description || "")
                     .toLowerCase()
-                    .includes(searchText)
+                    .includes(searchText);
 
+
+            const matchesCategory =
+
+                selectedCategory === "All" ||
+
+                menu.category ===
+                selectedCategory;
+
+
+            const matchesFoodType =
+
+                selectedFoodType === "All" ||
+
+                menu.food_type ===
+                selectedFoodType;
+
+
+            return (
+                matchesSearch &&
+                matchesCategory &&
+                matchesFoodType
             );
 
         });
 
 
-    // ================================
-    // CATEGORIES
-    // ================================
+    // =========================================
+    // CATEGORY DATA
+    // =========================================
 
     const starters =
         filteredMenus.filter(
@@ -601,20 +612,23 @@ function GroupRoom() {
                 menu.category === "Starter"
         );
 
-
     const mainCourses =
         filteredMenus.filter(
             menu =>
                 menu.category === "Main Course"
         );
 
+    const thalis =
+        filteredMenus.filter(
+            menu =>
+                menu.category === "Thali"
+        );
 
     const desserts =
         filteredMenus.filter(
             menu =>
                 menu.category === "Dessert"
         );
-
 
     const beverages =
         filteredMenus.filter(
@@ -623,9 +637,9 @@ function GroupRoom() {
         );
 
 
-    // ================================
-    // RENDER CATEGORY
-    // ================================
+    // =========================================
+    // RENDER MENU CATEGORY
+    // =========================================
 
     const renderCategory =
         (title, items) => {
@@ -633,7 +647,6 @@ function GroupRoom() {
             if (items.length === 0) {
                 return null;
             }
-
 
             return (
 
@@ -645,81 +658,131 @@ function GroupRoom() {
                         {title}
                     </h2>
 
-
                     <div
                         className="group-menu-grid"
                     >
 
-                        {items.map(menu => (
-
-                            <div
-                                className="group-menu-card"
-                                key={menu.id}
-                            >
-
-                                {menu.image && (
-
-                                    <img
-                                        src={
-                                            `https://final-internship-project-kcp1.onrender.com${menu.image}`
-                                        }
-                                        alt={menu.name}
-                                        className="group-menu-image"
-                                    />
-
-                                )}
-
+                        {items.map(
+                            (menu) => (
 
                                 <div
-                                    className="group-menu-content"
+                                    className="group-menu-card"
+                                    key={menu.id}
                                 >
 
-                                    <h3>
-                                        {menu.name}
-                                    </h3>
+                                    {/* IMAGE */}
 
+                                    {menu.image && (
 
-                                    <p>
-                                        {menu.description}
-                                    </p>
-
-
-                                    <div
-                                        className="group-menu-bottom"
-                                    >
-
-                                        <strong>
-                                            ₹{menu.price}
-                                        </strong>
-
-
-                                        <button
+                                        <img
+                                            src={
+                                                menu.image.startsWith("http")
+                                                    ? menu.image
+                                                    : `http://127.0.0.1:8000${menu.image}`
+                                            }
+                                            alt={menu.name}
+                                            className="group-menu-image"
                                             onClick={() =>
-                                                addToGroupCart(
-                                                    menu
+                                                navigate(
+                                                    `/menu/${menu.id}`
                                                 )
                                             }
-                                            disabled={
-                                                addingItem ===
-                                                menu.id
-                                            }
+                                        />
+
+                                    )}
+
+
+                                    {/* CONTENT */}
+
+                                    <div
+                                        className="group-menu-content"
+                                    >
+
+                                        <h3>
+                                            {menu.name}
+                                        </h3>
+
+                                        <p>
+                                            {menu.description}
+                                        </p>
+
+
+                                        {/* FOOD TYPE */}
+
+                                        {menu.food_type && (
+
+                                            <span
+                                                className={
+                                                    menu.food_type === "Veg"
+                                                        ? "group-veg-badge"
+                                                        : "group-nonveg-badge"
+                                                }
+                                            >
+
+                                                {menu.food_type === "Veg"
+                                                    ? "🟢 Veg"
+                                                    : "🔴 Non-Veg"}
+
+                                            </span>
+
+                                        )}
+
+
+                                        {/* PRICE + ADD */}
+
+                                        <div
+                                            className="group-menu-bottom"
                                         >
 
-                                            {addingItem ===
-                                            menu.id
-                                                ? "Adding..."
-                                                : "+ Add"
-                                            }
+                                            <strong>
+                                                ₹{menu.price}
+                                            </strong>
 
-                                        </button>
+
+                                            {/* ITEM ADDED MESSAGE */}
+
+                                            {isItemInGroupCart(
+                                                menu.id
+                                            ) ? (
+
+                                                <div className="item-added-message">
+
+                                                    ✓ Item added to group cart
+
+                                                </div>
+
+                                            ) : (
+
+                                                <button
+                                                    type="button"
+                                                    onClick={() =>
+                                                        addToGroupCart(
+                                                            menu
+                                                        )
+                                                    }
+                                                    disabled={
+                                                        addingItem ===
+                                                        menu.id
+                                                    }
+                                                >
+
+                                                    {addingItem ===
+                                                        menu.id
+                                                        ? "Adding..."
+                                                        : "+ Add"}
+
+                                                </button>
+
+                                            )}
+
+                                        </div>
 
                                     </div>
 
                                 </div>
 
-                            </div>
-
-                        ))}
+                            )
+                        )}
 
                     </div>
 
@@ -729,6 +792,10 @@ function GroupRoom() {
 
         };
 
+
+    // =========================================
+    // RETURN
+    // =========================================
 
     return (
 
@@ -742,9 +809,7 @@ function GroupRoom() {
                 <button
                     className="group-back-button"
                     onClick={() =>
-                        navigate(
-                            "/group-order"
-                        )
+                        navigate("/group-order")
                     }
                 >
                     ← Back
@@ -897,7 +962,6 @@ function GroupRoom() {
                         setGroupBudget("");
                         setBudgetMeals([]);
                         setBudgetSearched(false);
-
                         setShowBudgetPopup(true);
 
                     }}
@@ -926,6 +990,8 @@ function GroupRoom() {
                 </div>
 
 
+                {/* SEARCH */}
+
                 <div className="group-menu-search">
 
                     <span>
@@ -935,7 +1001,7 @@ function GroupRoom() {
 
                     <input
                         type="text"
-                        placeholder="Search for food..."
+                        placeholder="Search for your favourite food..."
                         value={search}
                         onChange={(e) =>
                             setSearch(
@@ -961,6 +1027,164 @@ function GroupRoom() {
                 </div>
 
 
+                {/* FOOD TYPE */}
+
+                <div className="group-food-type-buttons">
+
+                    <button
+                        className={
+                            selectedFoodType === "All"
+                                ? "active"
+                                : ""
+                        }
+                        onClick={() =>
+                            setSelectedFoodType(
+                                "All"
+                            )
+                        }
+                    >
+                        🍽️ All
+                    </button>
+
+
+                    <button
+                        className={
+                            selectedFoodType === "Veg"
+                                ? "active"
+                                : ""
+                        }
+                        onClick={() =>
+                            setSelectedFoodType(
+                                "Veg"
+                            )
+                        }
+                    >
+                        🟢 Veg
+                    </button>
+
+
+                    <button
+                        className={
+                            selectedFoodType === "Non-Veg"
+                                ? "active"
+                                : ""
+                        }
+                        onClick={() =>
+                            setSelectedFoodType(
+                                "Non-Veg"
+                            )
+                        }
+                    >
+                        🔴 Non-Veg
+                    </button>
+
+                </div>
+
+
+                {/* CATEGORY BUTTONS */}
+
+                <div className="group-category-buttons">
+
+                    <button
+                        className={
+                            selectedCategory === "All"
+                                ? "active"
+                                : ""
+                        }
+                        onClick={() =>
+                            setSelectedCategory(
+                                "All"
+                            )
+                        }
+                    >
+                        🍽️ All
+                    </button>
+
+
+                    <button
+                        className={
+                            selectedCategory === "Starter"
+                                ? "active"
+                                : ""
+                        }
+                        onClick={() =>
+                            setSelectedCategory(
+                                "Starter"
+                            )
+                        }
+                    >
+                        🥗 Starters
+                    </button>
+
+
+                    <button
+                        className={
+                            selectedCategory === "Main Course"
+                                ? "active"
+                                : ""
+                        }
+                        onClick={() =>
+                            setSelectedCategory(
+                                "Main Course"
+                            )
+                        }
+                    >
+                        🍛 Main Course
+                    </button>
+
+
+                    <button
+                        className={
+                            selectedCategory === "Thali"
+                                ? "active"
+                                : ""
+                        }
+                        onClick={() =>
+                            setSelectedCategory(
+                                "Thali"
+                            )
+                        }
+                    >
+                        🍱 Thalis
+                    </button>
+
+
+                    <button
+                        className={
+                            selectedCategory === "Dessert"
+                                ? "active"
+                                : ""
+                        }
+                        onClick={() =>
+                            setSelectedCategory(
+                                "Dessert"
+                            )
+                        }
+                    >
+                        🍰 Desserts
+                    </button>
+
+
+                    <button
+                        className={
+                            selectedCategory === "Beverage"
+                                ? "active"
+                                : ""
+                        }
+                        onClick={() =>
+                            setSelectedCategory(
+                                "Beverage"
+                            )
+                        }
+                    >
+                        🥤 Beverages
+                    </button>
+
+                </div>
+
+
+                {/* MENU */}
+
                 {filteredMenus.length === 0 ? (
 
                     <div className="group-no-food">
@@ -980,9 +1204,19 @@ function GroupRoom() {
 
 
                         <button
-                            onClick={() =>
-                                setSearch("")
-                            }
+                            onClick={() => {
+
+                                setSearch("");
+
+                                setSelectedCategory(
+                                    "All"
+                                );
+
+                                setSelectedFoodType(
+                                    "All"
+                                );
+
+                            }}
                         >
                             Show All Menu
                         </button>
@@ -1004,6 +1238,11 @@ function GroupRoom() {
                         )}
 
                         {renderCategory(
+                            "Thalis",
+                            thalis
+                        )}
+
+                        {renderCategory(
                             "Desserts",
                             desserts
                         )}
@@ -1020,7 +1259,7 @@ function GroupRoom() {
             </div>
 
 
-            {/* GROUP CART PREVIEW */}
+            {/* GROUP CART */}
 
             <div className="group-cart-card">
 
@@ -1040,7 +1279,8 @@ function GroupRoom() {
 
 
                     <strong>
-                        ₹{calculateTotal().toFixed(2)}
+                        ₹
+                        {calculateTotal().toFixed(2)}
                     </strong>
 
                 </div>
@@ -1131,6 +1371,7 @@ function GroupRoom() {
                                         </div>
 
                                     </div>
+
                                 )
                             )}
 
@@ -1155,9 +1396,7 @@ function GroupRoom() {
             </div>
 
 
-            {/* ============================= */}
             {/* GROUP BUDGET POPUP */}
-            {/* ============================= */}
 
             {showBudgetPopup && (
 
@@ -1186,18 +1425,10 @@ function GroupRoom() {
 
 
                         <p>
-                            Plan a meal for{" "}
-                            <strong>
-                                {memberCount}
-                            </strong>{" "}
-                            group member
-                            {memberCount !== 1
-                                ? "s"
-                                : ""}
+                            Plan a meal within your
+                            group budget.
                         </p>
 
-
-                        {/* BUDGET INPUT */}
 
                         <div className="group-budget-input">
 
@@ -1209,7 +1440,7 @@ function GroupRoom() {
                             <input
                                 type="number"
                                 min="1"
-                                placeholder="Enter total budget"
+                                placeholder="Enter group budget"
                                 value={groupBudget}
                                 onChange={(e) =>
                                     setGroupBudget(
@@ -1227,126 +1458,91 @@ function GroupRoom() {
                                 generateGroupBudgetMeals
                             }
                         >
-                            ✨ Find Group Meals
+                            🔍 Find Group Meals
                         </button>
 
 
-                        {/* RESULTS */}
+                        {budgetMeals.length > 0 && (
 
-                        {budgetSearched &&
-                            budgetMeals.length > 0 && (
+                            <div className="group-budget-results">
 
-                                <div className="group-budget-results">
-
-                                    <h3>
-                                        ✨ Recommended Group Meals
-                                    </h3>
+                                <h3>
+                                    ✨ Recommended Group Meals
+                                </h3>
 
 
-                                    {budgetMeals.map(
-                                        (
-                                            meal,
-                                            index
-                                        ) => (
+                                {budgetMeals.map(
+                                    (meal, index) => (
 
-                                            <div
-                                                className="group-budget-meal-card"
-                                                key={index}
-                                            >
+                                        <div
+                                            className="group-budget-meal-card"
+                                            key={index}
+                                        >
 
-                                                {/* FOOD ITEMS - NO IMAGES */}
+                                            <div className="group-budget-items">
 
-                                                <div className="group-budget-items">
+                                                {meal.items.map(
+                                                    item => (
 
-                                                    {meal.items.map(
-                                                        item => (
+                                                        <div
+                                                            className="group-budget-item"
+                                                            key={item.id}
+                                                        >
 
-                                                            <div
-                                                                className="group-budget-item"
-                                                                key={
-                                                                    item.id
-                                                                }
-                                                            >
+                                                            <span>
+                                                                {item.name}
+                                                            </span>
 
-                                                                <span>
-                                                                    {
-                                                                        item.name
-                                                                    }
-                                                                </span>
+                                                            <span>
+                                                                ₹
+                                                                {item.price}
+                                                            </span>
 
-                                                                <span>
-                                                                    ₹
-                                                                    {
-                                                                        item.price
-                                                                    }
-                                                                </span>
+                                                        </div>
 
-                                                            </div>
-
-                                                        )
-                                                    )}
-
-                                                </div>
-
-
-                                                {/* TOTAL */}
-
-                                                <div className="group-budget-meal-bottom">
-
-                                                    <div>
-
-                                                        <strong>
-                                                            Total: ₹
-                                                            {
-                                                                meal.total
-                                                            }
-                                                        </strong>
-
-
-                                                        <small>
-                                                            ₹
-                                                            {Number(
-                                                                groupBudget
-                                                            ) -
-                                                                meal.total}
-                                                            {" "}
-                                                            remaining
-                                                        </small>
-
-                                                    </div>
-
-
-                                                    <button
-                                                        onClick={() =>
-                                                            addGroupBudgetMeal(
-                                                                meal
-                                                            )
-                                                        }
-                                                        disabled={
-                                                            addingBudgetMeal
-                                                        }
-                                                    >
-
-                                                        {addingBudgetMeal
-                                                            ? "Adding..."
-                                                            : "Add Group Meal"
-                                                        }
-
-                                                    </button>
-
-                                                </div>
+                                                    )
+                                                )}
 
                                             </div>
 
-                                        )
-                                    )}
 
-                                </div>
+                                            <div className="group-budget-meal-bottom">
 
-                            )}
+                                                <strong>
+                                                    Total:
+                                                    ₹
+                                                    {meal.total}
+                                                </strong>
 
 
-                        {/* NO RESULTS */}
+                                                <button
+                                                    onClick={() =>
+                                                        addGroupBudgetMeal(
+                                                            meal
+                                                        )
+                                                    }
+                                                    disabled={
+                                                        addingBudgetMeal
+                                                    }
+                                                >
+
+                                                    {addingBudgetMeal
+                                                        ? "Adding..."
+                                                        : "Add Group Meal"}
+
+                                                </button>
+
+                                            </div>
+
+                                        </div>
+
+                                    )
+                                )}
+
+                            </div>
+
+                        )}
+
 
                         {budgetSearched &&
                             budgetMeals.length === 0 && (
@@ -1373,7 +1569,7 @@ function GroupRoom() {
             )}
 
 
-            {/* ADD POPUP */}
+            {/* ADD SUCCESS POPUP */}
 
             {showAddPopup && (
 
@@ -1402,11 +1598,14 @@ function GroupRoom() {
 
 
                         <p>
+
                             <strong>
                                 {addedItemName}
-                            </strong>{" "}
-                            was added to your
+                            </strong>
+
+                            {" "}was added to your
                             group cart.
+
                         </p>
 
 
@@ -1415,7 +1614,9 @@ function GroupRoom() {
                             <button
                                 className="continue-group-button"
                                 onClick={() =>
-                                    setShowAddPopup(false)
+                                    setShowAddPopup(
+                                        false
+                                    )
                                 }
                             >
                                 Continue Ordering
@@ -1426,7 +1627,9 @@ function GroupRoom() {
                                 className="view-group-cart-button"
                                 onClick={() => {
 
-                                    setShowAddPopup(false);
+                                    setShowAddPopup(
+                                        false
+                                    );
 
                                     navigate(
                                         `/group-order/${groupCode}/cart`

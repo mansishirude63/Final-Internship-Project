@@ -1345,14 +1345,16 @@
   }
 }
 
-
 .menu-list-container {
   width: 90%;
   max-width: 1250px;
   margin: 40px auto;
 }
 
-/* Header */
+
+/* =========================
+   HEADER
+========================= */
 
 .menu-header {
   text-align: center;
@@ -1371,7 +1373,9 @@
 }
 
 
-/* Search Bar */
+/* =========================
+   SEARCH BAR
+========================= */
 
 .menu-search {
   width: 70%;
@@ -1388,8 +1392,6 @@
   padding: 12px 18px;
 
   box-shadow: 0 5px 18px rgba(0, 0, 0, 0.1);
-
-  transition: 0.3s;
 }
 
 .menu-search:focus-within {
@@ -1421,13 +1423,56 @@
 }
 
 
-/* Category Buttons */
+/* =========================
+   VEG / NON-VEG BUTTONS
+========================= */
+
+.food-type-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  gap: 15px;
+  margin-bottom: 25px;
+
+  flex-wrap: wrap;
+}
+
+.food-type-btn {
+  min-width: 110px;
+
+  padding: 11px 22px;
+
+  border: 1px solid #ddd;
+  border-radius: 30px;
+
+  background: white;
+  color: #333;
+
+  font-size: 15px;
+  font-weight: bold;
+
+  cursor: pointer;
+}
+
+.food-type-btn.active {
+  background: #ff5722;
+  color: white;
+  border-color: #ff5722;
+
+  box-shadow: 0 4px 10px rgba(255, 87, 34, 0.25);
+}
+
+
+/* =========================
+   CATEGORY BUTTONS
+========================= */
 
 .category-buttons {
   display: flex;
   justify-content: center;
-  gap: 12px;
 
+  gap: 12px;
   flex-wrap: wrap;
 
   margin-bottom: 45px;
@@ -1444,15 +1489,6 @@
 
   font-size: 14px;
   cursor: pointer;
-
-  transition: 0.3s;
-}
-
-.category-buttons button:hover {
-  background: #ff5722;
-  color: white;
-
-  transform: translateY(-2px);
 }
 
 .category-buttons button.active {
@@ -1463,7 +1499,9 @@
 }
 
 
-/* Category */
+/* =========================
+   CATEGORY
+========================= */
 
 .menu-category {
   margin-bottom: 55px;
@@ -1481,19 +1519,22 @@
 }
 
 
-/* Grid */
+/* =========================
+   GRID
+========================= */
 
 .menu-list-grid {
   display: grid;
 
-  grid-template-columns:
-    repeat(4, 1fr);
+  grid-template-columns: repeat(4, 1fr);
 
   gap: 25px;
 }
 
 
-/* Card */
+/* =========================
+   CARD
+========================= */
 
 .menu-list-card {
   background: white;
@@ -1502,44 +1543,33 @@
 
   overflow: hidden;
 
-  box-shadow:
-    0 5px 18px rgba(0, 0, 0, 0.1);
-
-  transition: 0.3s;
-
-  display: flex;
-  flex-direction: column;
-}
-
-.menu-list-card:hover {
-  transform: translateY(-7px);
-
-  box-shadow:
-    0 12px 25px rgba(0, 0, 0, 0.16);
-}
-
-
-/* Image */
-
-.menu-image {
-  width: 100%;
-  aspect-ratio: 8 / 9;
-  object-fit: cover;
-  display: block;
-  cursor: pointer;
-}
-
-.menu-list-card {
-  background: white;
-  border-radius: 18px;
-  overflow: hidden;
   box-shadow: 0 5px 18px rgba(0, 0, 0, 0.1);
 
   display: flex;
   flex-direction: column;
 }
 
-/* Content */
+
+/* =========================
+   IMAGE
+========================= */
+
+.menu-image {
+  width: 100%;
+
+  aspect-ratio: 8 / 9;
+
+  object-fit: cover;
+
+  display: block;
+
+  cursor: pointer;
+}
+
+
+/* =========================
+   CONTENT
+========================= */
 
 .menu-card-content {
   padding: 18px;
@@ -1567,11 +1597,13 @@
 
   margin-bottom: 15px;
 
-  flex: 1;    
+  flex: 1;
 }
 
 
-/* Price + Button */
+/* =========================
+   PRICE + BUTTON
+========================= */
 
 .menu-card-bottom {
   display: flex;
@@ -1593,6 +1625,7 @@
   border: none;
 
   background: #ff5722;
+
   color: white;
 
   padding: 9px 17px;
@@ -1602,18 +1635,15 @@
   cursor: pointer;
 
   font-weight: bold;
-
-  transition: 0.3s;
 }
 
-.menu-card-bottom button:hover {
-  background: #e64a19;
-
-  transform: scale(1.05);
+.item-added-message{
+  color: #218838;
 }
 
-
-/* No Food */
+/* =========================
+   NO FOOD
+========================= */
 
 .no-menu {
   text-align: center;
@@ -1641,28 +1671,33 @@
   padding: 10px 20px;
 
   border: none;
+
   border-radius: 25px;
 
   background: #ff5722;
+
   color: white;
 
   cursor: pointer;
 }
 
 
-/* Tablet */
+/* =========================
+   TABLET
+========================= */
 
 @media (max-width: 1000px) {
 
   .menu-list-grid {
-    grid-template-columns:
-      repeat(3, 1fr);
+    grid-template-columns: repeat(3, 1fr);
   }
 
 }
 
 
-/* Mobile */
+/* =========================
+   MOBILE
+========================= */
 
 @media (max-width: 750px) {
 
@@ -1675,14 +1710,24 @@
   }
 
   .menu-list-grid {
-    grid-template-columns:
-      repeat(2, 1fr);
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .food-type-buttons {
+    gap: 10px;
+  }
+
+  .food-type-btn {
+    min-width: 95px;
+    padding: 10px 16px;
   }
 
 }
 
 
-/* Small Mobile */
+/* =========================
+   SMALL MOBILE
+========================= */
 
 @media (max-width: 500px) {
 
@@ -1696,6 +1741,16 @@
 
   .category-title {
     font-size: 24px;
+  }
+
+  .food-type-buttons {
+    gap: 8px;
+  }
+
+  .food-type-btn {
+    min-width: 85px;
+    padding: 9px 13px;
+    font-size: 14px;
   }
 
 }
@@ -2987,204 +3042,572 @@
 
 }
 
-/* Delivery Details */
-/* Delivery Page */
+/* =====================================================
+   CUSTOMER DELIVERY DETAILS PAGE
+   ===================================================== */
 
 .delivery-container {
-
+  width: 100%;
   min-height: 80vh;
+
+  box-sizing: border-box;
+
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 40px;
+
+  padding: 45px 20px;
 
   background: #fff8f0;
-
 }
 
 
+/* =========================
+   PAGE HEADING
+========================= */
 
 .delivery-container h2 {
+  margin: 0 0 22px;
 
-  font-size: 32px;
-  color: #ff6b35;
-  margin-bottom: 25px;
+  text-align: center;
 
+  color: #ff6338;
+
+  font-size: 36px;
+  font-weight: 700;
 }
 
 
+/* =========================
+   DELIVERY CARD
+========================= */
 
-/* Delivery Card */
+/*
+   IMPORTANT:
+   The Staff Delivery page also uses
+   .delivery-card.
 
-.delivery-card {
+   Therefore we specifically target
+   .delivery-container .delivery-card
+   so the staff page is not affected.
+*/
 
+.delivery-container .delivery-card {
   width: 420px;
-  background: white;
+  max-width: 100%;
 
-  padding: 30px;
+  box-sizing: border-box;
+
+  display: block;
+
+  margin: 0 auto;
+
+  padding: 30px 28px 28px;
+
+  background: #ffffff;
 
   border-radius: 20px;
 
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+
+  text-align: left;
 
   transition: 0.3s ease;
-
 }
 
 
+/* Card Hover */
 
-.delivery-card:hover {
+.delivery-container .delivery-card:hover {
+  transform: translateY(-3px);
 
-  transform: translateY(-5px);
-
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.18);
-
+  box-shadow: 0 18px 35px rgba(0, 0, 0, 0.15);
 }
 
 
+/* =========================
+   ORDER INFORMATION
+========================= */
 
-.delivery-card p {
+.delivery-container .delivery-card > p {
+  display: block;
 
-  font-size: 16px;
+  width: 100%;
 
-  margin: 15px 0;
+  margin: 0 0 15px;
 
-  color: #444;
+  color: #333;
 
+  font-size: 17px;
+
+  line-height: 1.35;
 }
 
 
-
-.delivery-card strong {
-
-  color: #222;
-
+.delivery-container .delivery-card strong {
+  color: #111;
 }
 
 
+/* =========================
+   DELIVERY STATUS
+========================= */
 
-/* Status Badge */
-
-.delivery-status {
-
+.delivery-container .delivery-status {
   display: inline-block;
 
   margin-left: 10px;
 
-  padding: 7px 18px;
+  padding: 8px 20px;
 
-  border-radius: 20px;
+  border-radius: 25px;
 
-  background: linear-gradient(135deg,
-      #ff9a3d,
-      #ff6b35);
+  background: #ff813d;
 
-  color: white;
+  color: #ffffff;
+
+  font-size: 16px;
 
   font-weight: 600;
 
+  vertical-align: middle;
 }
 
 
+/* =========================
+   TRACKING SECTION
+========================= */
 
-/* Tracking Section */
+/* =====================================================
+   ATTRACTIVE ORDER TRACKING
+===================================================== */
 
-.tracking {
+.delivery-container .tracking {
+  width: 100%;
 
-  margin-top: 30px;
+  margin-top: 28px;
+  padding: 22px 18px 20px;
 
-  border-top: 1px solid #eee;
+  box-sizing: border-box;
 
-  padding-top: 20px;
+  border-top: none;
+  border-radius: 16px;
 
+  background: #fffaf5;
+
+  box-shadow: inset 0 0 0 1px #f3eee8;
 }
 
 
+/* Tracking Heading */
 
-.tracking h3 {
+.delivery-container .tracking h3 {
+  margin: 0 0 25px;
 
   text-align: center;
 
-  color: #333;
+  color: #222;
 
-  margin-bottom: 20px;
-
+  font-size: 21px;
+  font-weight: 700;
 }
 
 
+/* =====================================================
+   TRACK STEP
+===================================================== */
 
-/* Track Steps */
-
-.track-step {
+.delivery-container .track-step {
+  position: relative;
 
   display: flex;
 
   align-items: center;
 
-  gap: 15px;
+  gap: 18px;
 
-  margin: 20px 0;
-
-  opacity: 0.4;
-
-}
-
-
-
-.track-step.active {
-
-  opacity: 1;
-
-}
-
-
-
-.track-circle {
-
-  width: 40px;
-
-  height: 40px;
-
-  border-radius: 50%;
-
-  background: #ddd;
-
-  display: flex;
-
-  align-items: center;
-
-  justify-content: center;
-
-  font-weight: bold;
-
-}
-
-
-
-.track-step.active .track-circle {
-
-  background: #ff6b35;
-
-  color: white;
-
-}
-
-
-
-.track-step p {
+  width: 100%;
+  height: 65px;
 
   margin: 0;
 
+  box-sizing: border-box;
+
+  opacity: 0.55;
+
+  color: #999;
+
+  font-size: 16px;
+
+  transition: all 0.3s ease;
+}
+
+
+/* =====================================================
+   VERTICAL LINE
+===================================================== */
+
+.delivery-container .track-step:not(:last-child)::after {
+  content: "";
+
+  position: absolute;
+
+  left: 20px;
+
+  top: 43px;
+
+  width: 3px;
+
+  height: 22px;
+
+  border-radius: 5px;
+
+  background: #ddd;
+}
+
+
+/* =====================================================
+   TRACK CIRCLE - COMMON
+===================================================== */
+
+.delivery-container .track-circle {
+  width: 42px;
+  height: 42px;
+
+  min-width: 42px;
+
+  flex-shrink: 0;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  color: white;
+
+  font-size: 16px;
+
+  font-weight: 700;
+
+  z-index: 2;
+
+  box-shadow: 0 5px 12px rgba(0, 0, 0, 0.12);
+
+  transition: all 0.3s ease;
+}
+
+
+/* =====================================================
+   STEP 1 - PREPARING
+   ORANGE
+===================================================== */
+
+.delivery-container .track-step:nth-child(2) {
+  color: #f07828;
+}
+
+
+.delivery-container .track-step:nth-child(2) .track-circle {
+  background: linear-gradient(
+    135deg,
+    #ffb347,
+    #ff6b35
+  );
+}
+
+
+.delivery-container .track-step:nth-child(2)::after {
+  background: linear-gradient(
+    to bottom,
+    #ff9a3d,
+    #4da6ff
+  );
+}
+
+
+/* =====================================================
+   STEP 2 - OUT FOR DELIVERY
+   BLUE
+===================================================== */
+
+.delivery-container .track-step:nth-child(3) {
+  color: #2980d9;
+}
+
+
+.delivery-container .track-step:nth-child(3) .track-circle {
+  background: linear-gradient(
+    135deg,
+    #5dade2,
+    #2874c6
+  );
+}
+
+
+.delivery-container .track-step:nth-child(3)::after {
+  background: linear-gradient(
+    to bottom,
+    #2874c6,
+    #55b879
+  );
+}
+
+
+/* =====================================================
+   STEP 3 - DELIVERED
+   GREEN
+===================================================== */
+
+.delivery-container .track-step:nth-child(4) {
+  color: #35a854;
+}
+
+
+.delivery-container .track-step:nth-child(4) .track-circle {
+  background: linear-gradient(
+    135deg,
+    #69d88a,
+    #27ae60
+  );
+}
+
+
+/* =====================================================
+   STEP TEXT
+===================================================== */
+
+.delivery-container .track-step p {
+  margin: 0;
+
+  color: inherit;
+
+  font-size: 16px;
+
   font-weight: 600;
+
+  transition: 0.3s ease;
+}
+
+
+/* =====================================================
+   ACTIVE STEP
+===================================================== */
+
+.delivery-container .track-step.active {
+  opacity: 1;
+
+  transform: translateX(3px);
+}
+
+
+.delivery-container .track-step.active .track-circle {
+  transform: scale(1.08);
+
+  box-shadow:
+    0 0 0 5px rgba(255, 107, 53, 0.12),
+    0 7px 16px rgba(0, 0, 0, 0.15);
+}
+
+
+/* =====================================================
+   COMPLETED STEP
+===================================================== */
+
+.delivery-container .track-step.completed {
+  opacity: 1;
+
+  transform: translateX(3px);
+}
+
+
+.delivery-container .track-step.completed .track-circle {
+  transform: scale(1.05);
+}
+
+
+/* =====================================================
+   ACTIVE / COMPLETED TEXT
+===================================================== */
+
+.delivery-container .track-step.active p,
+.delivery-container .track-step.completed p {
+  font-weight: 700;
+}
+
+
+/* =====================================================
+   HOVER EFFECT
+===================================================== */
+
+.delivery-container .track-step:hover {
+  opacity: 1;
+
+  transform: translateX(5px);
+}
+
+
+.delivery-container .track-step:hover .track-circle {
+  transform: scale(1.08);
+}
+
+
+/* =====================================================
+   CURRENT STATUS ANIMATION
+===================================================== */
+
+.delivery-container .track-step.active .track-circle {
+  animation: trackingPulse 1.8s infinite;
+}
+
+
+@keyframes trackingPulse {
+
+  0% {
+    box-shadow:
+      0 0 0 0 rgba(255, 107, 53, 0.35);
+  }
+
+  70% {
+    box-shadow:
+      0 0 0 9px rgba(255, 107, 53, 0);
+  }
+
+  100% {
+    box-shadow:
+      0 0 0 0 rgba(255, 107, 53, 0);
+  }
 
 }
 
 
+/* =====================================================
+   MOBILE
+===================================================== */
 
-/* Loading */
+@media (max-width: 500px) {
+
+  .delivery-container .tracking {
+    padding: 20px 14px;
+  }
+
+  .delivery-container .track-step {
+    gap: 15px;
+  }
+
+  .delivery-container .track-circle {
+    width: 40px;
+    height: 40px;
+
+    min-width: 40px;
+  }
+
+}
+
+/* =========================
+   DELIVERY BUTTONS
+========================= */
+
+.delivery-container .delivery-buttons {
+  width: 100%;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 20px;
+
+  margin-top: 25px;
+}
+
+
+/* =========================
+   VIEW MY ORDERS BUTTON
+========================= */
+
+.delivery-container .orders-btn {
+  padding: 14px 27px;
+
+  border: none;
+
+  border-radius: 30px;
+
+  background: #ff813d;
+
+  color: #ffffff;
+
+  font-size: 16px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  box-shadow: 0 8px 18px rgba(255, 99, 56, 0.25);
+
+  transition: all 0.3s ease;
+}
+
+
+.delivery-container .orders-btn:hover {
+  background: #ff6338;
+
+  transform: translateY(-2px);
+
+  box-shadow: 0 10px 20px rgba(255, 99, 56, 0.30);
+}
+
+
+/* =========================
+   BACK HOME BUTTON
+========================= */
+
+.delivery-container .back-btn {
+  padding: 12px 27px;
+
+  border: 2px solid #ff6338;
+
+  border-radius: 30px;
+
+  background: #ffffff;
+
+  color: #ff6338;
+
+  font-size: 16px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: all 0.3s ease;
+}
+
+
+.delivery-container .back-btn:hover {
+  background: #ff6338;
+
+  color: #ffffff;
+
+  transform: translateY(-2px);
+}
+
+
+/* =========================
+   BUTTON CLICK EFFECT
+========================= */
+
+.delivery-container .orders-btn:active,
+.delivery-container .back-btn:active {
+  transform: scale(0.95);
+}
+
+
+/* =========================
+   LOADING
+========================= */
 
 .loading {
-
   text-align: center;
 
   margin-top: 100px;
@@ -3192,157 +3615,98 @@
   color: #ff6b35;
 
   font-size: 25px;
-
 }
 
 
+/* =====================================================
+   DELIVERY PAGE - TABLET
+===================================================== */
 
-/* Mobile Responsive */
-
-@media(max-width:500px) {
-
-  .delivery-card {
-
-    width: 90%;
-
-    padding: 20px;
-
-  }
-
+@media (max-width: 768px) {
 
   .delivery-container {
+    padding: 40px 20px;
+  }
 
-    padding: 20px;
-
+  .delivery-container h2 {
+    font-size: 32px;
   }
 
 }
 
-/* Delivery Buttons Container */
 
-.delivery-buttons {
+/* =====================================================
+   DELIVERY PAGE - MOBILE
+===================================================== */
 
-  display: flex;
+@media (max-width: 500px) {
 
-  justify-content: center;
+  .delivery-container {
+    width: 100%;
 
-  gap: 20px;
+    min-height: 80vh;
 
-  margin-top: 30px;
-
-}
-
-
-
-/* View Orders Button */
-
-.orders-btn {
-
-  padding: 12px 25px;
-
-  border: none;
-
-  border-radius: 30px;
-
-  background: linear-gradient(135deg,
-      #ff9a3d,
-      #ff6b35);
-
-  color: white;
-
-  font-size: 15px;
-
-  font-weight: 600;
-
-  cursor: pointer;
-
-  transition: all 0.3s ease;
-
-  box-shadow: 0 5px 15px rgba(255, 107, 53, 0.3);
-
-}
+    padding: 30px 15px;
+  }
 
 
+  .delivery-container h2 {
+    font-size: 30px;
 
-.orders-btn:hover {
-
-  transform: translateY(-3px);
-
-  box-shadow: 0 8px 20px rgba(255, 107, 53, 0.4);
-
-}
+    margin-bottom: 20px;
+  }
 
 
+  .delivery-container .delivery-card {
+    width: 100%;
+
+    padding: 30px 22px;
+  }
 
 
-
-/* Back Home Button */
-
-.back-btn {
-
-  padding: 12px 25px;
-
-  border-radius: 30px;
-
-  border: 2px solid #ff6b35;
-
-  background: white;
-
-  color: #ff6b35;
-
-  font-size: 15px;
-
-  font-weight: 600;
-
-  cursor: pointer;
-
-  transition: all 0.3s ease;
-
-}
+  .delivery-container .delivery-card > p {
+    font-size: 16px;
+  }
 
 
+  .delivery-container .delivery-status {
+    padding: 7px 16px;
 
-.back-btn:hover {
-
-  background: #ff6b35;
-
-  color: white;
-
-  transform: translateY(-3px);
-
-}
+    font-size: 15px;
+  }
 
 
-
-/* Click effect */
-
-.orders-btn:active,
-.back-btn:active {
-
-  transform: scale(0.95);
-
-}
+  .delivery-container .tracking h3 {
+    font-size: 20px;
+  }
 
 
+  .delivery-container .track-step {
+    gap: 25px;
 
-/* Mobile */
+    font-size: 16px;
+  }
 
-@media(max-width:500px) {
 
-  .delivery-buttons {
+  .delivery-container .track-step p {
+    font-size: 16px;
+  }
 
+
+  .delivery-container .delivery-buttons {
     flex-direction: column;
 
-    width: 100%;
+    gap: 12px;
 
+    width: 100%;
   }
 
 
-  .orders-btn,
-  .back-btn {
-
+  .delivery-container .orders-btn,
+  .delivery-container .back-btn {
     width: 100%;
 
+    box-sizing: border-box;
   }
 
 }
@@ -4282,4 +4646,356 @@
 /* No movement on hover */
 .delivery-card:hover {
     transform: none !important;
+}
+
+.cancel-order-btn { 
+  margin-top: 10px;
+  border: none;
+  background: #e53935;
+  color: white;
+  padding: 9px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.cancel-order-btn:hover {
+  background: #c62828;
+}
+/* =====================================================
+   ATTRACTIVE ORDER STATUS BADGES
+===================================================== */
+
+/* Common status style */
+
+.order-container .status-pending,
+.order-container .status-preparing,
+.order-container .status-out-for-delivery,
+.order-container .status-delivered,
+.order-container .status-cancelled {
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 6px;
+
+  min-width: 130px;
+
+  padding: 8px 16px;
+
+  border-radius: 30px;
+
+  font-size: 14px;
+
+  font-weight: 700;
+
+  letter-spacing: 0.2px;
+
+  border: 1px solid transparent;
+
+  transition: all 0.3s ease;
+}
+
+
+/* =====================================================
+   PENDING
+===================================================== */
+
+.order-container .status-pending {
+  background: #fff4d6;
+
+  color: #b77900;
+
+  border-color: #ffe3a0;
+
+  box-shadow: 0 4px 10px rgba(183, 121, 0, 0.12);
+}
+
+
+/* =====================================================
+   PREPARING
+===================================================== */
+
+.order-container .status-preparing {
+  background: #fff0e6;
+
+  color: #e85d04;
+
+  border-color: #ffd1b8;
+
+  box-shadow: 0 4px 10px rgba(232, 93, 4, 0.12);
+}
+
+
+/* =====================================================
+   OUT FOR DELIVERY
+===================================================== */
+
+.order-container .status-out-for-delivery {
+  background: #e8f4ff;
+
+  color: #1976d2;
+
+  border-color: #b9ddff;
+
+  box-shadow: 0 4px 10px rgba(25, 118, 210, 0.12);
+}
+
+
+/* =====================================================
+   DELIVERED
+===================================================== */
+
+.order-container .status-delivered {
+  background: #e8f8ef;
+
+  color: #18864b;
+
+  border-color: #b9e8ca;
+
+  box-shadow: 0 4px 10px rgba(24, 134, 75, 0.12);
+}
+
+
+/* =====================================================
+   CANCELLED
+===================================================== */
+
+.order-container .status-cancelled {
+  background: #fff0f2;
+
+  color: #d9365e;
+
+  border-color: #ffc4d0;
+
+  box-shadow: 0 4px 10px rgba(217, 54, 94, 0.14);
+
+  position: relative;
+}
+
+
+/* Cancelled icon */
+
+.order-container .status-cancelled::before {
+  content: "×";
+
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  width: 20px;
+  height: 20px;
+
+  border-radius: 50%;
+
+  background: #ff5c7c;
+
+  color: white;
+
+  font-size: 15px;
+
+  font-weight: 800;
+
+  line-height: 1;
+}
+
+
+/* =====================================================
+   HOVER EFFECT
+===================================================== */
+
+.order-container .status-pending:hover,
+.order-container .status-preparing:hover,
+.order-container .status-out-for-delivery:hover,
+.order-container .status-delivered:hover,
+.order-container .status-cancelled:hover {
+  transform: translateY(-2px);
+
+  box-shadow: 0 7px 16px rgba(0, 0, 0, 0.12);
+}
+
+
+/* =====================================================
+   CANCELLED ORDER ROW
+===================================================== */
+
+.order-container tr:has(.status-cancelled) {
+  background: #fff8fa;
+}
+
+
+/* Keep cancelled row subtle on hover */
+
+.order-container tr:has(.status-cancelled):hover {
+  background: #fff1f4;
+}
+.cancelled-text {
+  margin-top: 7px;
+
+  text-align: center;
+
+  color: #d9365e;
+
+  font-size: 13px;
+
+  font-weight: 600;
+}
+
+/* =========================
+   OFFERS NAVBAR LINK
+========================= */
+
+.offers-link {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 4px;
+
+  padding: 6px 12px;
+
+  border-radius: 20px;
+
+  background: #fff1e8;
+
+  color: #ff6338 !important;
+
+  font-weight: 700;
+
+  transition: all 0.3s ease;
+}
+
+
+.offers-link:hover {
+  background: #ff6338;
+
+  color: white !important;
+
+  transform: translateY(-2px);
+}
+
+/* ===============================
+   OFFER ORDER BUTTON
+================================ */
+
+.offer-order-btn {
+  display: inline-block;
+
+  margin-top: 15px;
+
+  padding: 11px 24px;
+
+  border: none;
+  border-radius: 25px;
+
+  background: linear-gradient(
+    135deg,
+    #ff9a3d,
+    #ff6338
+  );
+
+  color: white;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  box-shadow: 0 5px 15px rgba(255, 107, 53, 0.25);
+
+  transition: all 0.3s ease;
+}
+
+
+/* Hover */
+
+.offer-order-btn:hover {
+  transform: translateY(-3px);
+
+  background: linear-gradient(
+    135deg,
+    #ff6338,
+    #e85225
+  );
+
+  box-shadow: 0 8px 20px rgba(255, 107, 53, 0.35);
+}
+
+
+/* Click */
+
+.offer-order-btn:active {
+  transform: scale(0.95);
+}
+
+/* =================================
+   APPLIED OFFER
+================================= */
+
+.cart-offer {
+  margin: 15px 0;
+  padding: 14px 18px;
+
+  border: 1px dashed #ff6338;
+  border-radius: 15px;
+
+  background: #fff8f0;
+}
+
+
+.cart-offer p {
+  margin: 5px 0;
+
+  color: #555;
+
+  font-size: 14px;
+
+  font-weight: 600;
+}
+
+
+.cart-offer .discount-text {
+  color: #28a745;
+
+  font-size: 15px;
+
+  font-weight: 700;
+}
+
+
+/* Remove offer */
+
+.remove-offer-btn {
+  margin-top: 7px;
+
+  padding: 5px 12px;
+
+  border: none;
+  border-radius: 15px;
+
+  background: #ffe5e5;
+
+  color: #d93636;
+
+  font-size: 12px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: 0.3s ease;
+}
+
+
+.remove-offer-btn:hover {
+  background: #d93636;
+
+  color: white;
+}
+
+.offer-coupon{
+  margin-top: 10px;
 }

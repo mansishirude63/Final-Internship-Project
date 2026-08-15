@@ -12,6 +12,7 @@ function DeliveryDetails() {
   useEffect(() => {
     fetchDelivery();
 
+    // Automatically refresh delivery status every 5 seconds
     const interval = setInterval(() => {
       fetchDelivery();
     }, 5000);
@@ -22,6 +23,7 @@ function DeliveryDetails() {
   const fetchDelivery = async () => {
     try {
       const response = await getDeliveryByOrderId(orderId);
+
       setDelivery(response.data.delivery);
     } catch (error) {
       console.log(error);
@@ -31,81 +33,157 @@ function DeliveryDetails() {
     }
   };
 
+  // Loading
   if (loading) {
-    return <h2 className="loading">Loading delivery details...</h2>;
+    return (
+      <h2 className="loading">
+        Loading delivery details...
+      </h2>
+    );
   }
 
+  // Delivery not found
   if (!delivery) {
-    return <h2 className="loading">Delivery not found</h2>;
+    return (
+      <h2 className="loading">
+        Delivery not found
+      </h2>
+    );
   }
+
+  // Current delivery status
+  const status = delivery.delivery_status;
 
   return (
     <div className="delivery-container">
-      <h2>Track Your Order 🚚</h2>
 
+      {/* Page Heading */}
+      <h2>
+        Track Your Order 🚚
+      </h2>
+
+
+      {/* Delivery Card */}
       <div className="delivery-card">
+
+        {/* Order ID */}
         <p>
-          <strong>Order ID:</strong> {delivery.order}
+          <strong>Order ID:</strong>{" "}
+          {delivery.order}
         </p>
 
+
+        {/* Address */}
         <p>
-          <strong>Address:</strong> {delivery.delivery_address}
+          <strong>Address:</strong>{" "}
+          {delivery.delivery_address}
         </p>
+
+
+        {/* Delivery Person */}
         <p>
           <strong>Delivery Person:</strong>{" "}
           {delivery.delivery_person_name}
         </p>
 
+
+        {/* Current Status */}
         <p>
           <strong>Status:</strong>{" "}
+
           <span className="delivery-status">
-            {delivery.delivery_status}
+            {status}
           </span>
         </p>
 
+
+        {/* =========================
+            ORDER TRACKING
+        ========================= */}
+
         <div className="tracking">
-          <h3>Order Status</h3>
 
-          {/* Step 1 */}
+          <h3>
+            Order Status
+          </h3>
+
+
+          {/* STEP 1 - PREPARING */}
+
           <div
-            className={`track-step ${delivery.delivery_status === "Preparing"
+            className={`track-step ${
+              status === "Preparing"
                 ? "active"
-                : delivery.delivery_status === "Out for Delivery" ||
-                  delivery.delivery_status === "Delivered"
-                  ? "completed"
-                  : ""
-              }`}
+                : status === "Out for Delivery" ||
+                  status === "Delivered"
+                ? "completed"
+                : ""
+            }`}
           >
-            <div className="track-circle">1</div>
-            <p>Preparing</p>
+
+            <div className="track-circle">
+              1
+            </div>
+
+            <p>
+              Preparing
+            </p>
+
           </div>
 
-          {/* Step 2 */}
+
+          {/* STEP 2 - OUT FOR DELIVERY */}
+
           <div
-            className={`track-step ${delivery.delivery_status === "Out for Delivery"
+            className={`track-step ${
+              status === "Out for Delivery"
                 ? "active"
-                : delivery.delivery_status === "Delivered"
-                  ? "completed"
-                  : ""
-              }`}
+                : status === "Delivered"
+                ? "completed"
+                : ""
+            }`}
           >
-            <div className="track-circle">2</div>
-            <p>Out for Delivery</p>
+
+            <div className="track-circle">
+              2
+            </div>
+
+            <p>
+              Out for Delivery
+            </p>
+
           </div>
 
-          {/* Step 3 */}
+
+          {/* STEP 3 - DELIVERED */}
+
           <div
-            className={`track-step ${delivery.delivery_status === "Delivered"
+            className={`track-step ${
+              status === "Delivered"
                 ? "active"
                 : ""
-              }`}
+            }`}
           >
-            <div className="track-circle">3</div>
-            <p>Delivered</p>
+
+            <div className="track-circle">
+              3
+            </div>
+
+            <p>
+              Delivered
+            </p>
+
           </div>
+
         </div>
 
+
+        {/* =========================
+            BUTTONS
+        ========================= */}
+
         <div className="delivery-buttons">
+
           <button
             className="orders-btn"
             onClick={() => navigate("/orders")}
@@ -113,14 +191,18 @@ function DeliveryDetails() {
             View My Orders
           </button>
 
+
           <button
             className="back-btn"
             onClick={() => navigate("/")}
           >
             Back To Home
           </button>
+
         </div>
+
       </div>
+
     </div>
   );
 }

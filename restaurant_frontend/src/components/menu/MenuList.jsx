@@ -1,7 +1,9 @@
-
 import { useEffect, useState } from "react";
 import { getMenus } from "../../api/menuApi";
-import { addCartItem } from "../../api/cartApi";
+import {
+  addCartItem,
+  getCartItems
+} from "../../api/cartApi";
 import { useNavigate } from "react-router-dom";
 
 function MenuList() {
@@ -9,10 +11,15 @@ function MenuList() {
   const [menus, setMenus] = useState([]);
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [selectedFoodType, setSelectedFoodType] = useState("All");
+
+  // Cart
+  const [cartItems, setCartItems] = useState([]);
 
   // Add to cart popup
   const [showCartPopup, setShowCartPopup] = useState(false);
   const [addedItem, setAddedItem] = useState("");
+
 
   // Budget ordering
   const [showBudgetPopup, setShowBudgetPopup] = useState(false);
@@ -22,8 +29,13 @@ function MenuList() {
   const navigate = useNavigate();
 
 
+  // =========================
+  // FETCH MENU
+  // =========================
+
   useEffect(() => {
     fetchMenus();
+    fetchCart();
   }, []);
 
 
@@ -48,6 +60,46 @@ function MenuList() {
 
 
   // =========================
+  // FETCH CART
+  // =========================
+
+  const fetchCart = async () => {
+
+    try {
+
+      const userId = localStorage.getItem("userId");
+
+      if (!userId) {
+        return;
+      }
+
+      const response = await getCartItems(userId);
+
+      setCartItems(response.data.cart || []);
+
+    } catch (error) {
+
+      console.log("Failed to load cart", error);
+
+    }
+
+  };
+
+
+  // =========================
+  // CHECK IF ITEM IS IN CART
+  // =========================
+
+  const isItemInCart = (menuId) => {
+
+    return cartItems.some(
+      (item) => Number(item.menu) === Number(menuId)
+    );
+
+  };
+
+
+  // =========================
   // ADD SINGLE ITEM TO CART
   // =========================
 
@@ -61,9 +113,22 @@ function MenuList() {
 
         alert("Please login first");
         navigate("/login");
+
         return;
 
       }
+
+
+      // Already in cart
+      if (isItemInCart(menu.id)) {
+
+        setAddedItem(menu.name);
+        setShowCartPopup(true);
+
+        return;
+
+      }
+
 
       await addCartItem({
 
@@ -73,12 +138,26 @@ function MenuList() {
 
       });
 
+
+      // Update local cart state
+      setCartItems((previous) => [
+
+        ...previous,
+
+        {
+          menu: menu.id
+        }
+
+      ]);
+
+
       setAddedItem(menu.name);
       setShowCartPopup(true);
 
     } catch (error) {
 
       console.log(error);
+
       alert("Failed to add item");
 
     }
@@ -97,18 +176,21 @@ function MenuList() {
     if (!amount || amount <= 0) {
 
       alert("Please enter a valid budget");
+
       return;
 
     }
 
-    // Only items which fit individually
+
     const availableItems = menus.filter(
       menu => Number(menu.price) <= amount
     );
 
+
     if (availableItems.length === 0) {
 
       setBudgetMeals([]);
+
       return;
 
     }
@@ -116,15 +198,15 @@ function MenuList() {
 
     const combinations = [];
 
-    /*
-      We generate combinations using
-      2 or 3 different food items.
-    */
+
+    // Single / Two / Three items
 
     for (let i = 0; i < availableItems.length; i++) {
 
-      // Single item
       const item1 = availableItems[i];
+
+
+      // Single item
 
       if (Number(item1.price) <= amount) {
 
@@ -140,6 +222,7 @@ function MenuList() {
 
 
       // Two items
+
       for (
         let j = i + 1;
         j < availableItems.length;
@@ -152,11 +235,15 @@ function MenuList() {
           Number(item1.price) +
           Number(item2.price);
 
+
         if (total2 <= amount) {
 
           combinations.push({
 
-            items: [item1, item2],
+            items: [
+              item1,
+              item2
+            ],
 
             total: total2
 
@@ -166,6 +253,7 @@ function MenuList() {
 
 
         // Three items
+
         for (
           let k = j + 1;
           k < availableItems.length;
@@ -178,6 +266,7 @@ function MenuList() {
             Number(item1.price) +
             Number(item2.price) +
             Number(item3.price);
+
 
           if (total3 <= amount) {
 
@@ -203,6 +292,7 @@ function MenuList() {
 
 
     // Remove duplicates
+
     const uniqueMeals = combinations.filter(
       (meal, index, self) => {
 
@@ -211,8 +301,11 @@ function MenuList() {
           .sort()
           .join("-");
 
+
         return (
+
           index ===
+
           self.findIndex(other => {
 
             const otherIds = other.items
@@ -220,80 +313,107 @@ function MenuList() {
               .sort()
               .join("-");
 
+
             return ids === otherIds;
 
           })
+
         );
 
       }
+
     );
 
 
-    // Sort by:
-    // 1. Highest number of items
-    // 2. Closest to budget
+    // Sort
 
     uniqueMeals.sort((a, b) => {
 
-      if (b.items.length !== a.items.length) {
+      if (
+        b.items.length !==
+        a.items.length
+      ) {
 
-        return b.items.length - a.items.length;
+        return (
+          b.items.length -
+          a.items.length
+        );
 
       }
+
 
       return b.total - a.total;
 
     });
 
 
-    // Show only best 6 combinations
-    setBudgetMeals(uniqueMeals.slice(0, 6));
+    setBudgetMeals(
+      uniqueMeals.slice(0, 6)
+    );
 
   };
 
 
   // =========================
-  // ADD BUDGET MEAL TO CART
+  // ADD BUDGET MEAL
   // =========================
 
   const addBudgetMealToCart = async (meal) => {
 
     try {
 
-      const userId = localStorage.getItem("userId");
+      const userId =
+        localStorage.getItem("userId");
+
 
       if (!userId) {
 
         alert("Please login first");
+
         navigate("/login");
+
         return;
 
       }
 
 
-      // Add every item in the meal
       for (const item of meal.items) {
 
-        await addCartItem({
+        // Don't add duplicate items
 
-          user: userId,
+        if (!isItemInCart(item.id)) {
 
-          menu: item.id,
+          await addCartItem({
 
-          quantity: 1
+            user: userId,
 
-        });
+            menu: item.id,
+
+            quantity: 1
+
+          });
+
+        }
 
       }
 
 
+      // Refresh cart
+
+      await fetchCart();
+
+
       setShowBudgetPopup(false);
 
+
       setAddedItem(
+
         meal.items
           .map(item => item.name)
           .join(", ")
+
       );
+
 
       setShowCartPopup(true);
 
@@ -309,27 +429,49 @@ function MenuList() {
 
 
   // =========================
-  // SEARCH + CATEGORY FILTER
+  // SEARCH + FILTER
   // =========================
 
   const filteredMenus = menus.filter((menu) => {
 
     const matchesSearch =
+
       menu.name
         .toLowerCase()
-        .includes(search.toLowerCase()) ||
+        .includes(
+          search.toLowerCase()
+        ) ||
 
       menu.description
         .toLowerCase()
-        .includes(search.toLowerCase());
+        .includes(
+          search.toLowerCase()
+        );
 
 
     const matchesCategory =
+
       selectedCategory === "All" ||
-      menu.category === selectedCategory;
+
+      menu.category ===
+      selectedCategory;
 
 
-    return matchesSearch && matchesCategory;
+    const matchesFoodType =
+
+      selectedFoodType === "All" ||
+
+      menu.food_type ===
+      selectedFoodType;
+
+
+    return (
+
+      matchesSearch &&
+      matchesCategory &&
+      matchesFoodType
+
+    );
 
   });
 
@@ -338,10 +480,15 @@ function MenuList() {
   // CATEGORY RENDER
   // =========================
 
-  const renderCategory = (title, items) => {
+  const renderCategory = (
+    title,
+    items
+  ) => {
 
     if (items.length === 0) {
+
       return null;
+
     }
 
 
@@ -366,12 +513,16 @@ function MenuList() {
               {menu.image && (
 
                 <img
-                  src={`https://final-internship-project-kcp1.onrender.com${menu.image}`}
+                  src={
+                    `http://127.0.0.1:8000${menu.image}`
+                  }
                   alt={menu.name}
                   className="menu-image"
 
                   onClick={() =>
-                    navigate(`/menu/${menu.id}`)
+                    navigate(
+                      `/menu/${menu.id}`
+                    )
                   }
 
                 />
@@ -391,6 +542,30 @@ function MenuList() {
                 </p>
 
 
+                {/* FOOD TYPE */}
+
+                {
+                  menu.food_type && (
+
+                    <span
+                      className={
+                        menu.food_type ===
+                          "Veg"
+                          ? "group-veg-badge"
+                          : "group-nonveg-badge"
+                      }
+                    >
+
+                      {menu.food_type ===
+                        "Veg"
+                        ? "🟢 Veg"
+                        : "🔴 Non-Veg"}
+
+                    </span>
+
+                  )
+                }
+
                 <div className="menu-card-bottom">
 
                   <h4>
@@ -398,14 +573,22 @@ function MenuList() {
                   </h4>
 
 
-                  <button
-                    type="button"
-                    onClick={() =>
-                      addToCart(menu)
-                    }
-                  >
-                    + Add
-                  </button>
+                  {isItemInCart(menu.id) ? (
+
+                    <div className="item-added-message">
+                      ✓ Item added to cart
+                    </div>
+
+                  ) : (
+
+                    <button
+                      type="button"
+                      onClick={() => addToCart(menu)}
+                    >
+                      + Add
+                    </button>
+
+                  )}
 
                 </div>
 
@@ -424,31 +607,52 @@ function MenuList() {
   };
 
 
-  const starters = filteredMenus.filter(
-    menu => menu.category === "Starter"
-  );
+  // =========================
+  // CATEGORY FILTER
+  // =========================
 
-  const mainCourses = filteredMenus.filter(
-    menu => menu.category === "Main Course"
-  );
+  const starters =
+    filteredMenus.filter(
+      menu =>
+        menu.category ===
+        "Starter"
+    );
 
-  const desserts = filteredMenus.filter(
-    menu => menu.category === "Dessert"
-  );
 
-  const beverages = filteredMenus.filter(
-    menu => menu.category === "Beverage"
-  );
+  const mainCourses =
+    filteredMenus.filter(
+      menu =>
+        menu.category ===
+        "Main Course"
+    );
 
+
+  const desserts =
+    filteredMenus.filter(
+      menu =>
+        menu.category ===
+        "Dessert"
+    );
+
+
+  const beverages =
+    filteredMenus.filter(
+      menu =>
+        menu.category ===
+        "Beverage"
+    );
+
+
+  // =========================
+  // RETURN
+  // =========================
 
   return (
 
     <div className="menu-list-container">
 
 
-      {/* ========================= */}
       {/* HEADER */}
-      {/* ========================= */}
 
       <div className="menu-header">
 
@@ -463,9 +667,7 @@ function MenuList() {
       </div>
 
 
-      {/* ========================= */}
-      {/* BUDGET ORDER BUTTON */}
-      {/* ========================= */}
+      {/* BUDGET ORDER */}
 
       <div className="budget-order-section">
 
@@ -476,8 +678,8 @@ function MenuList() {
           </h2>
 
           <p>
-            Tell us your budget and we'll find
-            tasty combinations for you!
+            Tell us your budget and we'll
+            find tasty combinations for you!
           </p>
 
         </div>
@@ -485,6 +687,7 @@ function MenuList() {
 
         <button
           className="budget-order-btn"
+
           onClick={() => {
 
             setBudget("");
@@ -492,28 +695,37 @@ function MenuList() {
             setShowBudgetPopup(true);
 
           }}
+
         >
+
           💰 Budget Order
+
         </button>
 
       </div>
 
 
-      {/* ========================= */}
       {/* SEARCH */}
-      {/* ========================= */}
 
       <div className="menu-search">
 
-        <span>🔍</span>
+        <span>
+          🔍
+        </span>
+
 
         <input
+
           type="text"
+
           placeholder="Search for your favourite food..."
+
           value={search}
+
           onChange={(e) =>
             setSearch(e.target.value)
           }
+
         />
 
 
@@ -521,9 +733,15 @@ function MenuList() {
 
           <button
             className="clear-search"
-            onClick={() => setSearch("")}
+
+            onClick={() =>
+              setSearch("")
+            }
+
           >
+
             ✕
+
           </button>
 
         )}
@@ -531,13 +749,75 @@ function MenuList() {
       </div>
 
 
-      {/* ========================= */}
+      {/* VEG / NON-VEG */}
+
+      <div className="food-type-buttons">
+
+        <button
+
+          className={
+            selectedFoodType === "All"
+              ? "food-type-btn active"
+              : "food-type-btn"
+          }
+
+          onClick={() =>
+            setSelectedFoodType("All")
+          }
+
+        >
+
+          🍽️ All
+
+        </button>
+
+
+        <button
+
+          className={
+            selectedFoodType === "Veg"
+              ? "food-type-btn active"
+              : "food-type-btn"
+          }
+
+          onClick={() =>
+            setSelectedFoodType("Veg")
+          }
+
+        >
+
+          🟢 Veg
+
+        </button>
+
+
+        <button
+
+          className={
+            selectedFoodType === "Non-Veg"
+              ? "food-type-btn active"
+              : "food-type-btn"
+          }
+
+          onClick={() =>
+            setSelectedFoodType("Non-Veg")
+          }
+
+        >
+
+          🔴 Non-Veg
+
+        </button>
+
+      </div>
+
+
       {/* CATEGORY BUTTONS */}
-      {/* ========================= */}
 
       <div className="category-buttons">
 
         <button
+
           className={
             selectedCategory === "All"
               ? "active"
@@ -547,12 +827,16 @@ function MenuList() {
           onClick={() =>
             setSelectedCategory("All")
           }
+
         >
+
           🍽️ All
+
         </button>
 
 
         <button
+
           className={
             selectedCategory === "Starter"
               ? "active"
@@ -562,12 +846,16 @@ function MenuList() {
           onClick={() =>
             setSelectedCategory("Starter")
           }
+
         >
+
           🥗 Starters
+
         </button>
 
 
         <button
+
           className={
             selectedCategory === "Main Course"
               ? "active"
@@ -577,12 +865,16 @@ function MenuList() {
           onClick={() =>
             setSelectedCategory("Main Course")
           }
+
         >
+
           🍛 Main Course
+
         </button>
 
 
         <button
+
           className={
             selectedCategory === "Dessert"
               ? "active"
@@ -592,12 +884,16 @@ function MenuList() {
           onClick={() =>
             setSelectedCategory("Dessert")
           }
+
         >
+
           🍰 Desserts
+
         </button>
 
 
         <button
+
           className={
             selectedCategory === "Beverage"
               ? "active"
@@ -607,16 +903,17 @@ function MenuList() {
           onClick={() =>
             setSelectedCategory("Beverage")
           }
+
         >
+
           🥤 Beverages
+
         </button>
 
       </div>
 
 
-      {/* ========================= */}
       {/* MENU */}
-      {/* ========================= */}
 
       {filteredMenus.length > 0 ? (
 
@@ -662,14 +959,19 @@ function MenuList() {
 
 
           <button
+
             onClick={() => {
 
               setSearch("");
               setSelectedCategory("All");
+              setSelectedFoodType("All");
 
             }}
+
           >
+
             Show All Menu
+
           </button>
 
         </div>
@@ -677,9 +979,9 @@ function MenuList() {
       )}
 
 
-      {/* ========================= */}
-      {/* BUDGET POPUP */}
-      {/* ========================= */}
+      {/* =========================
+          BUDGET POPUP
+      ========================= */}
 
       {showBudgetPopup && (
 
@@ -689,11 +991,15 @@ function MenuList() {
 
             <button
               className="budget-close"
+
               onClick={() =>
                 setShowBudgetPopup(false)
               }
+
             >
+
               ✕
+
             </button>
 
 
@@ -714,30 +1020,42 @@ function MenuList() {
 
             <div className="budget-input-box">
 
-              <span>₹</span>
+              <span>
+                ₹
+              </span>
+
 
               <input
+
                 type="number"
+
                 min="1"
+
                 placeholder="Enter your budget"
+
                 value={budget}
+
                 onChange={(e) =>
                   setBudget(e.target.value)
                 }
+
               />
 
             </div>
 
 
             <button
+
               className="find-meals-btn"
+
               onClick={generateBudgetMeals}
+
             >
+
               🔍 Find Meals
+
             </button>
 
-
-            {/* BUDGET RESULTS */}
 
             {budgetMeals.length > 0 && (
 
@@ -790,11 +1108,15 @@ function MenuList() {
 
 
                         <button
+
                           onClick={() =>
                             addBudgetMealToCart(meal)
                           }
+
                         >
+
                           Add This Meal
+
                         </button>
 
                       </div>
@@ -832,9 +1154,9 @@ function MenuList() {
       )}
 
 
-      {/* ========================= */}
-      {/* CART SUCCESS POPUP */}
-      {/* ========================= */}
+      {/* =========================
+          CART SUCCESS POPUP
+      ========================= */}
 
       {showCartPopup && (
 
@@ -848,32 +1170,58 @@ function MenuList() {
 
 
             <h2>
-              Added to Cart!
+              {isItemInCart(
+                menus.find(
+                  menu =>
+                    menu.name === addedItem
+                )?.id
+              )
+                ? "Already in Cart"
+                : "Added to Cart!"}
             </h2>
 
 
             <p>
+
               <strong>
                 {addedItem}
-              </strong>{" "}
-              has been added to your cart.
+              </strong>
+
+              {" "}
+
+              {isItemInCart(
+                menus.find(
+                  menu =>
+                    menu.name === addedItem
+                )?.id
+              )
+                ? "is already in your cart."
+                : "has been added to your cart."}
+
             </p>
 
 
             <div className="cart-popup-buttons">
 
               <button
+
                 className="continue-shopping-btn"
+
                 onClick={() =>
                   setShowCartPopup(false)
                 }
+
               >
+
                 Continue Shopping
+
               </button>
 
 
               <button
+
                 className="view-cart-btn"
+
                 onClick={() => {
 
                   setShowCartPopup(false);
@@ -881,8 +1229,11 @@ function MenuList() {
                   navigate("/cart");
 
                 }}
+
               >
+
                 View Cart 🛒
+
               </button>
 
             </div>

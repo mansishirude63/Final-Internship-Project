@@ -1,0 +1,194 @@
+.offers-page {
+  min-height: 80vh;
+  padding: 45px 30px;
+
+  background: #fff8f0;
+
+  text-align: center;
+}
+
+.offers-page h1 {
+  margin-bottom: 8px;
+
+  color: #ff6338;
+
+  font-size: 36px;
+}
+
+.offers-subtitle {
+  margin-bottom: 35px;
+
+  color: #777;
+
+  font-size: 17px;
+}
+
+
+/* Offers Grid */
+
+.offers-container {
+  max-width: 1100px;
+
+  margin: auto;
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, 1fr);
+
+  gap: 25px;
+}
+
+
+/* Offer Card */
+
+.offer-card {
+  position: relative;
+
+  padding: 25px;
+
+  background: white;
+
+  border-radius: 20px;
+
+  box-shadow:
+    0 10px 25px rgba(0, 0, 0, 0.10);
+
+  transition: 0.3s ease;
+
+  text-align: left;
+}
+
+.offer-card:hover {
+  transform: translateY(-7px);
+
+  box-shadow:
+    0 15px 30px rgba(0, 0, 0, 0.15);
+}
+
+
+/* Title */
+
+.offer-card h2 {
+  margin-bottom: 10px;
+
+  color: #333;
+
+  font-size: 21px;
+}
+
+
+/* Description */
+
+.offer-card p {
+  color: #666;
+
+  line-height: 1.5;
+}
+
+
+/* Discount */
+
+.offer-discount {
+  display: inline-block;
+
+  margin-top: 10px;
+
+  padding: 7px 15px;
+
+  border-radius: 20px;
+
+  background: #ff6338;
+
+  color: white;
+
+  font-weight: 700;
+}
+
+
+/* Price */
+
+.offer-price {
+  margin-top: 18px;
+}
+
+.old-price {
+  margin-right: 12px;
+
+  color: #999;
+
+  text-decoration: line-through;
+}
+
+.new-price {
+  color: #ff6338;
+
+  font-size: 22px;
+
+  font-weight: 700;
+}
+
+
+/* Coupon */
+
+.coupon {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  margin-top: 20px;
+
+  padding: 10px 12px;
+
+  border: 1px dashed #ff6338;
+
+  border-radius: 10px;
+
+  background: #fff8f0;
+}
+
+.coupon strong {
+  color: #ff6338;
+}
+
+.coupon button {
+  padding: 6px 12px;
+
+  border: none;
+
+  border-radius: 15px;
+
+  background: #ff6338;
+
+  color: white;
+
+  cursor: pointer;
+}
+
+
+/* Mobile */
+
+@media (max-width: 800px) {
+
+  .offers-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+}
+
+@media (max-width: 500px) {
+
+  .offers-page {
+    padding: 30px 15px;
+  }
+
+  .offers-page h1 {
+    font-size: 30px;
+  }
+
+  .offers-container {
+    grid-template-columns: 1fr;
+  }
+
+}

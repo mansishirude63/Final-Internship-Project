@@ -128,15 +128,9 @@ function RegisterUser({ closePopup }) {
 
 
     } catch (error) {
-
-
-      console.log(error.response);
-
-      alert("Registration Failed");
-
-
-    }
-
+    console.log("REGISTER ERROR:", error.response?.data);
+    alert(JSON.stringify(error.response?.data));
+}
   };
 
 
