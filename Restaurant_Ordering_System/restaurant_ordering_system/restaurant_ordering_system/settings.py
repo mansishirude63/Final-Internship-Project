@@ -23,12 +23,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-09$nbrji!$5(++4t8p9gsvbd3_^0cb!y2((+23@-&$20nfmn(2'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 CORS_ALLOW_ALL_ORIGINS = True
 
 ALLOWED_HOSTS = [
-    #  "final-internship-project-kcp1.onrender.com",
+    "final-internship-project-kcp1.onrender.com",
     "127.0.0.1",
     "localhost",
 ]
