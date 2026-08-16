@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://127.0.0.1:8000/api/group_order";
+const API_URL = "https://final-internship-project-kcp1.onrender.com/api/group_order";
 
 
 export const createGroupOrder = async (
