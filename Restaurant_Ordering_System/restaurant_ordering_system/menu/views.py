@@ -6,6 +6,40 @@ from .serializers import MenuSerializer
 
 @api_view(['POST'])
 def add_menu(request):
+
+    if not isinstance(request.data, list):
+        return Response({
+            "success": False,
+            "message": "Please send menu data as a list"
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+    updated = 0
+    not_found = 0
+
+    for item in request.data:
+
+        fields = item.get("fields", {})
+        name = fields.get("name")
+        image = fields.get("image")
+
+        try:
+            menu = Menu.objects.get(name=name)
+
+            # Update ONLY the image
+            if image:
+                menu.image = image
+                menu.save(update_fields=["image"])
+                updated += 1
+
+        except Menu.DoesNotExist:
+            not_found += 1
+
+    return Response({
+        "success": True,
+        "message": "Menu images updated",
+        "updated": updated,
+        "not_found": not_found
+    })
     # Import all menu items from menu_data.json
     if isinstance(request.data, list):
         created = 0
