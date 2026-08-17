@@ -40,6 +40,10 @@ def place_order(request):
 
         user = User.objects.get(id=user_id)
 
+        # ====================================================
+        # UPDATE ADDRESS
+        # ====================================================
+
         if new_address:
             user.address = new_address
             user.save()
@@ -60,6 +64,7 @@ def place_order(request):
         if group_code:
 
             try:
+
                 group_order = GroupOrder.objects.get(
                     group_code=group_code.upper()
                 )
@@ -74,6 +79,10 @@ def place_order(request):
                     status=status.HTTP_404_NOT_FOUND
                 )
 
+            # -----------------------------------------------
+            # CHECK GROUP STATUS
+            # -----------------------------------------------
+
             if group_order.status in [
                 "Completed",
                 "Cancelled"
@@ -86,6 +95,10 @@ def place_order(request):
                     },
                     status=status.HTTP_400_BAD_REQUEST
                 )
+
+            # -----------------------------------------------
+            # CHECK MEMBER
+            # -----------------------------------------------
 
             is_member = GroupMember.objects.filter(
                 group_order=group_order,
@@ -102,6 +115,10 @@ def place_order(request):
                     status=status.HTTP_403_FORBIDDEN
                 )
 
+            # -----------------------------------------------
+            # GET GROUP CART
+            # -----------------------------------------------
+
             group_cart_items = GroupCartItem.objects.filter(
                 group_order=group_order
             )
@@ -116,6 +133,10 @@ def place_order(request):
                     status=status.HTTP_400_BAD_REQUEST
                 )
 
+            # -----------------------------------------------
+            # CALCULATE GROUP TOTAL
+            # -----------------------------------------------
+
             total_price = 0
 
             for item in group_cart_items:
@@ -124,6 +145,10 @@ def place_order(request):
                     item.menu.price *
                     item.quantity
                 )
+
+            # -----------------------------------------------
+            # DELIVERY PERSON
+            # -----------------------------------------------
 
             delivery_person = User.objects.filter(
                 status="Staff"
@@ -139,11 +164,19 @@ def place_order(request):
                     status=status.HTTP_400_BAD_REQUEST
                 )
 
+            # -----------------------------------------------
+            # CREATE GROUP ORDER
+            # -----------------------------------------------
+
             order = Order.objects.create(
                 user=user,
                 address=user.address,
                 total_price=total_price
             )
+
+            # -----------------------------------------------
+            # CREATE DELIVERY
+            # -----------------------------------------------
 
             Delivery.objects.create(
                 order=order,
@@ -151,6 +184,10 @@ def place_order(request):
                 delivery_person=delivery_person,
                 delivery_status="Preparing"
             )
+
+            # -----------------------------------------------
+            # CREATE ORDER ITEMS
+            # -----------------------------------------------
 
             for item in group_cart_items:
 
@@ -160,6 +197,10 @@ def place_order(request):
                     quantity=item.quantity,
                     price=item.menu.price
                 )
+
+            # -----------------------------------------------
+            # CLEAR GROUP CART
+            # -----------------------------------------------
 
             group_cart_items.delete()
 
@@ -197,14 +238,60 @@ def place_order(request):
                     status=status.HTTP_400_BAD_REQUEST
                 )
 
-            total_price = 0
+            # =================================================
+            # IMPORTANT:
+            # GET DISCOUNTED TOTAL FROM FRONTEND
+            # =================================================
 
-            for item in cart_items:
+            total_price = request.data.get(
+                "total_price"
+            )
 
-                total_price += (
-                    item.menu.price *
-                    item.quantity
-                )
+            # -----------------------------------------------
+            # IF FRONTEND DOES NOT SEND TOTAL
+            # CALCULATE NORMAL CART TOTAL
+            # -----------------------------------------------
+
+            if total_price is None:
+
+                total_price = 0
+
+                for item in cart_items:
+
+                    total_price += (
+                        item.menu.price *
+                        item.quantity
+                    )
+
+            else:
+
+                try:
+
+                    total_price = float(
+                        total_price
+                    )
+
+                except (TypeError, ValueError):
+
+                    return Response(
+                        {
+                            "success": False,
+                            "message": "Invalid total price"
+                        },
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
+
+            # -----------------------------------------------
+            # PREVENT NEGATIVE TOTAL
+            # -----------------------------------------------
+
+            if total_price < 0:
+
+                total_price = 0
+
+            # -----------------------------------------------
+            # DELIVERY PERSON
+            # -----------------------------------------------
 
             delivery_person = User.objects.filter(
                 status="Staff"
@@ -220,11 +307,19 @@ def place_order(request):
                     status=status.HTTP_400_BAD_REQUEST
                 )
 
+            # -----------------------------------------------
+            # CREATE ORDER
+            # -----------------------------------------------
+
             order = Order.objects.create(
                 user=user,
                 address=user.address,
                 total_price=total_price
             )
+
+            # -----------------------------------------------
+            # CREATE DELIVERY
+            # -----------------------------------------------
 
             Delivery.objects.create(
                 order=order,
@@ -232,6 +327,10 @@ def place_order(request):
                 delivery_person=delivery_person,
                 delivery_status="Preparing"
             )
+
+            # -----------------------------------------------
+            # CREATE ORDER ITEMS
+            # -----------------------------------------------
 
             for item in cart_items:
 
@@ -242,7 +341,15 @@ def place_order(request):
                     price=item.menu.price
                 )
 
+            # -----------------------------------------------
+            # CLEAR CART
+            # -----------------------------------------------
+
             cart_items.delete()
+
+            # -----------------------------------------------
+            # SERIALIZER
+            # -----------------------------------------------
 
             serializer = OrderSerializer(order)
 
@@ -255,6 +362,10 @@ def place_order(request):
                 status=status.HTTP_201_CREATED
             )
 
+    # ========================================================
+    # USER NOT FOUND
+    # ========================================================
+
     except User.DoesNotExist:
 
         return Response(
@@ -264,6 +375,10 @@ def place_order(request):
             },
             status=status.HTTP_404_NOT_FOUND
         )
+
+    # ========================================================
+    # OTHER ERROR
+    # ========================================================
 
     except Exception as e:
 
@@ -456,7 +571,9 @@ def cancel_order(request, order_id):
             status=status.HTTP_404_NOT_FOUND
         )
 
-    # Check order ownership
+    # -----------------------------------------------
+    # CHECK ORDER OWNERSHIP
+    # -----------------------------------------------
 
     if order.user_id != int(user_id):
 
@@ -468,7 +585,9 @@ def cancel_order(request, order_id):
             status=status.HTTP_403_FORBIDDEN
         )
 
-    # Delivered order cannot be cancelled
+    # -----------------------------------------------
+    # DELIVERED ORDER
+    # -----------------------------------------------
 
     if order.status == "Delivered":
 
@@ -480,7 +599,9 @@ def cancel_order(request, order_id):
             status=status.HTTP_400_BAD_REQUEST
         )
 
-    # Already cancelled
+    # -----------------------------------------------
+    # ALREADY CANCELLED
+    # -----------------------------------------------
 
     if order.status == "Cancelled":
 
@@ -492,12 +613,16 @@ def cancel_order(request, order_id):
             status=status.HTTP_400_BAD_REQUEST
         )
 
-    # Cancel order
+    # -----------------------------------------------
+    # CANCEL ORDER
+    # -----------------------------------------------
 
     order.status = "Cancelled"
     order.save()
 
-    # Update delivery status too
+    # -----------------------------------------------
+    # UPDATE DELIVERY
+    # -----------------------------------------------
 
     try:
 
@@ -599,6 +724,10 @@ def confirm_group_order(request):
             group_code=group_code.upper()
         )
 
+        # -----------------------------------------------
+        # CHECK MEMBER
+        # -----------------------------------------------
+
         is_member = GroupMember.objects.filter(
             group_order=group_order,
             user_id=user_id
@@ -614,6 +743,10 @@ def confirm_group_order(request):
                 status=status.HTTP_403_FORBIDDEN
             )
 
+        # -----------------------------------------------
+        # CHECK STATUS
+        # -----------------------------------------------
+
         if group_order.status in [
             "Completed",
             "Cancelled"
@@ -626,6 +759,10 @@ def confirm_group_order(request):
                 },
                 status=status.HTTP_400_BAD_REQUEST
             )
+
+        # -----------------------------------------------
+        # GROUP CART
+        # -----------------------------------------------
 
         group_cart_items = GroupCartItem.objects.filter(
             group_order=group_order
@@ -640,6 +777,10 @@ def confirm_group_order(request):
                 },
                 status=status.HTTP_400_BAD_REQUEST
             )
+
+        # -----------------------------------------------
+        # ADDRESS
+        # -----------------------------------------------
 
         if new_address:
 
@@ -656,6 +797,10 @@ def confirm_group_order(request):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
+        # -----------------------------------------------
+        # CALCULATE TOTAL
+        # -----------------------------------------------
+
         total_price = 0
 
         for item in group_cart_items:
@@ -664,6 +809,10 @@ def confirm_group_order(request):
                 item.menu.price *
                 item.quantity
             )
+
+        # -----------------------------------------------
+        # DELIVERY PERSON
+        # -----------------------------------------------
 
         delivery_person = User.objects.filter(
             status="Staff"
@@ -679,11 +828,19 @@ def confirm_group_order(request):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
+        # -----------------------------------------------
+        # CREATE ORDER
+        # -----------------------------------------------
+
         order = Order.objects.create(
             user=user,
             address=user.address,
             total_price=total_price
         )
+
+        # -----------------------------------------------
+        # CREATE DELIVERY
+        # -----------------------------------------------
 
         Delivery.objects.create(
             order=order,
@@ -691,6 +848,10 @@ def confirm_group_order(request):
             delivery_person=delivery_person,
             delivery_status="Preparing"
         )
+
+        # -----------------------------------------------
+        # CREATE ORDER ITEMS
+        # -----------------------------------------------
 
         for item in group_cart_items:
 
@@ -700,6 +861,10 @@ def confirm_group_order(request):
                 quantity=item.quantity,
                 price=item.menu.price
             )
+
+        # -----------------------------------------------
+        # CLEAR GROUP CART
+        # -----------------------------------------------
 
         group_cart_items.delete()
 

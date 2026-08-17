@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-09$nbrji!$5(++4t8p9gsvbd3_^0cb!y2((+23@-&$20nfmn(2'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 CORS_ALLOW_ALL_ORIGINS = True
 
@@ -48,8 +48,8 @@ INSTALLED_APPS = [
 
     'rest_framework',
 
-    'cloudinary',
-    'cloudinary_storage',
+    # 'cloudinary',
+    # 'cloudinary_storage',
 
     'accounts',
     'menu',
