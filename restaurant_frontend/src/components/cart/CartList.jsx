@@ -8,215 +8,155 @@ import {
 
 import { useNavigate } from "react-router-dom";
 
-
 function CartList() {
-
   const [cartItems, setCartItems] = useState([]);
-
   const [selectedOffer, setSelectedOffer] = useState(null);
 
   const navigate = useNavigate();
 
-
-  /* ===============================
-     FETCH CART
-  =============================== */
-
   useEffect(() => {
-
     fetchCartItems();
 
-    const savedOffer =
-      localStorage.getItem("selectedOffer");
+    const savedOffer = localStorage.getItem("selectedOffer");
 
     if (savedOffer) {
-
-      setSelectedOffer(
-        JSON.parse(savedOffer)
-      );
-
+      setSelectedOffer(JSON.parse(savedOffer));
     }
-
   }, []);
 
-
   const fetchCartItems = async () => {
-
     try {
+      const userId = localStorage.getItem("userId");
 
-      const userId =
-        localStorage.getItem("userId");
-
-      const response =
-        await getCartItems(userId);
+      const response = await getCartItems(userId);
 
       setCartItems(response.data);
-
     } catch (error) {
-
       console.log(error);
-
       alert("Failed to load cart items");
-
     }
-
   };
 
-
-  /* ===============================
-     INCREASE QUANTITY
-  =============================== */
-
   const increaseQuantity = async (item) => {
-
     try {
-
       await updateCartItem(item.id, {
         quantity: item.quantity + 1,
       });
 
       fetchCartItems();
-
     } catch (error) {
-
       console.error(error);
-
     }
-
   };
 
-
-  /* ===============================
-     DECREASE QUANTITY
-  =============================== */
-
   const decreaseQuantity = async (item) => {
-
     if (item.quantity <= 1) return;
 
     try {
-
       await updateCartItem(item.id, {
         quantity: item.quantity - 1,
       });
 
       fetchCartItems();
-
     } catch (error) {
-
       console.error(error);
-
     }
-
   };
 
-
-  /* ===============================
-     REMOVE ITEM
-  =============================== */
-
   const removeItem = async (id) => {
-
     try {
-
       await deleteCartItem(id);
 
       fetchCartItems();
-
     } catch (error) {
-
       console.error(error);
-
       alert("Failed to remove item");
-
     }
-
   };
-
 
   /* ===============================
      SUBTOTAL
   =============================== */
 
   const subtotal = cartItems.reduce(
-    (total, item) =>
-      total + Number(item.total_price),
+    (total, item) => total + Number(item.total_price),
     0
   );
 
-
   /* ===============================
-     FIND OFFER ITEM
+     OFFER ITEM IDS
   =============================== */
 
-  const offerItem = selectedOffer?.itemIds?.length
-    ? cartItems.find((item) =>
-        selectedOffer.itemIds.includes(
-          Number(item.menu)
-        )
-      )
-    : null;
-
-
-  /* ===============================
-     CHECK OFFER
-  =============================== */
-
-  const offerInvalid =
-    selectedOffer &&
-    selectedOffer.itemIds?.length > 0 &&
-    !offerItem;
-
+  const offerItemIds = {
+    VEG15: [2, 5, 42],
+    VEGFAMILY15: [1, 2, 11, 13, 35, 37],
+    VEGFEAST20: [11, 15, 24],
+    CHICKENTHALI15: [62],
+    MUTTONTHALI10: [63],
+    FISHTHALI15: [64],
+    ROYALTHALI20: [65],
+  };
 
   /* ===============================
-     DISCOUNT
+     CALCULATE DISCOUNT
   =============================== */
 
-  const discount = offerItem
-    ? Number(offerItem.total_price) *
-      (selectedOffer.discount / 100)
-    : 0;
+  let discount = 0;
+  let offerInvalid = false;
 
+  if (selectedOffer) {
+    const code = selectedOffer.code;
+
+    // WELCOME20 → discount on complete cart
+    if (code === "WELCOME20") {
+      discount = subtotal * (selectedOffer.discount / 100);
+    }
+
+    // Other offers → discount only on offer items
+    else if (offerItemIds[code]) {
+      const matchingItems = cartItems.filter((item) =>
+        offerItemIds[code].includes(Number(item.menu))
+      );
+
+      if (matchingItems.length === 0) {
+        offerInvalid = true;
+      } else {
+        const offerSubtotal = matchingItems.reduce(
+          (total, item) => total + Number(item.total_price),
+          0
+        );
+
+        discount =
+          offerSubtotal * (selectedOffer.discount / 100);
+      }
+    }
+  }
 
   /* ===============================
      FINAL TOTAL
   =============================== */
 
-  const finalTotal =
-    subtotal - discount;
-
+  const finalTotal = Math.max(0, subtotal - discount);
 
   /* ===============================
      REMOVE OFFER
   =============================== */
 
   const removeOffer = () => {
-
-    localStorage.removeItem(
-      "selectedOffer"
-    );
-
+    localStorage.removeItem("selectedOffer");
     setSelectedOffer(null);
-
   };
-
 
   /* ===============================
      PLACE ORDER
   =============================== */
 
   const handlePlaceOrder = () => {
-
     navigate("/orders/place_order");
-
   };
 
-
   return (
-
     <div className="cart-container">
-
-      {/* BACK BUTTON */}
 
       <button
         className="backBtn"
@@ -225,18 +165,13 @@ function CartList() {
         ←
       </button>
 
-
       <h2>🛒 My Cart</h2>
 
-
-      {/* ===============================
-          CART ITEMS
-      =============================== */}
+      {/* CART ITEMS */}
 
       <div className="cart-grid">
 
         {cartItems.map((item) => (
-
           <div
             className="cart-card"
             key={item.id}
@@ -248,20 +183,13 @@ function CartList() {
               className="cart-image"
             />
 
-
             <div className="cart-info">
 
-              <h3>
-                {item.menu_name}
-              </h3>
-
+              <h3>{item.menu_name}</h3>
 
               <p>
                 Price: ₹{item.menu_price}
               </p>
-
-
-              {/* QUANTITY */}
 
               <div className="quantity-box">
 
@@ -273,11 +201,7 @@ function CartList() {
                   -
                 </button>
 
-
-                <span>
-                  {item.quantity}
-                </span>
-
+                <span>{item.quantity}</span>
 
                 <button
                   onClick={() =>
@@ -289,13 +213,9 @@ function CartList() {
 
               </div>
 
-
               <h4>
                 Total: ₹{item.total_price}
               </h4>
-
-
-              {/* REMOVE */}
 
               <button
                 className="remove-btn"
@@ -309,38 +229,26 @@ function CartList() {
             </div>
 
           </div>
-
         ))}
 
       </div>
 
-
-      {/* ===============================
-          CART TOTAL
-      =============================== */}
+      {/* CART TOTAL */}
 
       <div className="cart-bottom">
 
-
         <div className="cart-total">
-
-          {/* SUBTOTAL */}
 
           <h3>
             Subtotal: ₹{subtotal.toFixed(2)}
           </h3>
 
-
-          {/* ===============================
-              OFFER
-          =============================== */}
+          {/* OFFER */}
 
           {selectedOffer && (
-
             <div className="cart-offer">
 
               {offerInvalid ? (
-
                 <>
                   <p>
                     ⚠️ {selectedOffer.title}
@@ -358,24 +266,17 @@ function CartList() {
                     Remove Offer
                   </button>
                 </>
-
               ) : (
-
                 <>
                   <p>
                     🎁 {selectedOffer.title}
                   </p>
 
                   <p className="discount-text">
-
                     {selectedOffer.discount}% OFF
-
                     {" - ₹"}
-
                     {discount.toFixed(2)}
-
                   </p>
-
 
                   <button
                     className="remove-offer-btn"
@@ -383,41 +284,27 @@ function CartList() {
                   >
                     Remove Offer
                   </button>
-
                 </>
-
               )}
 
             </div>
-
           )}
-
 
           {/* DISCOUNT */}
 
           {!offerInvalid && discount > 0 && (
-
             <p className="discount-text">
-
-              Discount:
-              {" - ₹"}
-              {discount.toFixed(2)}
-
+              Discount: - ₹{discount.toFixed(2)}
             </p>
-
           )}
 
-
-          {/* FINAL TOTAL */}
+          {/* GRAND TOTAL */}
 
           <h2>
             Grand Total: ₹{finalTotal.toFixed(2)}
           </h2>
 
         </div>
-
-
-        {/* PLACE ORDER */}
 
         <button
           onClick={handlePlaceOrder}
@@ -429,10 +316,7 @@ function CartList() {
       </div>
 
     </div>
-
   );
-
 }
-
 
 export default CartList;
